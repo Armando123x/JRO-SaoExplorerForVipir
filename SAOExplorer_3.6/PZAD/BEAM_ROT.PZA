@@ -1,0 +1,20 @@
+Natural
+;
+; PZAD Color Translation Table
+;
+; Automatic color selection
+; for DPS rotated antenna BEM files
+;
+;
+;Color	Name	O/X	Zenith	Azimuth		Doppler
+;
+1	ENE	01 	12 	bc      	01234567     	
+2	ESE	01 	12 	9a            	01234567      	
+3	WNW	01 	12 	34            	01234567      	
+4	Vo-	0 	0  	0            	0123       	
+5	Vo+	0 	0  	0            	4567       	
+8	WSW	01 	12 	56            	01234567      	
+9	X-	1 	0  	0       	0123       	
+10	X+	1 	0  	0       	4567       	
+11	S	01 	12 	78            	01234567      	
+13	N	01 	12 	12            	01234567      	

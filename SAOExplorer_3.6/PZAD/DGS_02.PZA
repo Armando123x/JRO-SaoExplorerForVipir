@@ -1,0 +1,20 @@
+Automatic
+;
+; PZAD Color Translation Table
+;
+; Automatic table for Z=0(8) T=2(6)
+;
+;Color	Name	O/X	Zenith	Azimuth		Doppler
+;
+1	n+2	0 	1  	1            	5       	
+2	n-2	0 	1  	1            	2       	
+3	n-1	0 	1  	2            	3       	
+4	vo-	0 	0  	0            	23      	
+5	vo+	0 	0  	0            	45      	
+7	ne-2	0 	1  	2            	2       	
+8	ne-1	0 	1  	2            	3       	
+9	X-	1 	0  	0            	23      	
+10	x+	1 	0  	0            	45      	
+11	ne+1	0 	1  	2            	4       	
+12	ne+2	0 	1  	2            	5       	
+13	n+1	0 	1  	1            	4       	

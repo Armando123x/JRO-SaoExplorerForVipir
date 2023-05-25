@@ -1,0 +1,18 @@
+Automatic
+;
+; PZAD Color Translation Table
+;
+; Automatic table for Z=4(C) T=3(7)
+;
+;Color	Name	O/X	Zenith	Azimuth		Doppler
+;
+1	NNW	0 	2  	2            	34      	
+2	WNW	0 	2  	3            	34      	
+3	W	0 	2  	4            	34      	
+4	vo-	0 	0  	0            	3       	
+5	vo+	0 	0  	0            	4       	
+7	WSW	0 	2  	5            	34      	
+9	X-	1 	0  	0            	3       	
+10	x+	1 	0  	0            	4       	
+11	SWS	0 	2  	6            	34      	
+13	N	0 	2  	1            	34      	

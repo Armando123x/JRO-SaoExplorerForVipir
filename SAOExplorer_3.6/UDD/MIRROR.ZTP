@@ -1,0 +1,19 @@
+; this is the table of status values depending on Z and T settings
+;
+;  D P S    portable  only
+;
+; the lines started with semi-colon means comment line
+; each defined data line must terminated by a semi-colon;
+
+; Antenna configuration is "mirror"
+
+; MMM and BEM ionograms here
+; for Z=5(D), T=0123(4567)89AB(CDEF)
+zt data (5, 1) = 96, 32, 96, 32, 96, 32, 96, 32;
+zt data (5, 3) = 4, 6, 8, 10, 12, 2, 96, 32;
+
+; RSF ionogram: 0 is vertical, 1-6 are the beams, no polarization
+zt data (0, 0) = 0, 4, 6, 8, 10, 12, 2, 0;
+
+; for antenna rotate direction: 1 for clockwide
+antenna = 1;

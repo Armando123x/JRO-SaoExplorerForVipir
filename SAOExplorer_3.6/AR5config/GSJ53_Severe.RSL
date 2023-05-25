@@ -1,0 +1,31 @@
+#(c) UMLCAR, Recognition Step list and properties File, v 1.0 
+#Mon Mar 28 14:26:48 EDT 2011
+selRsProp[11]=
+selRsProp[2]=
+selRsProp[5]=
+selRsProp[8]=
+selRS[12]=Recognizer.RS_CombineSegments_StraightGap
+selRS[1]=ARTIST.RS_RemoveMultiples
+selRS[4]=ARTIST.RS_RemoveSpikes
+selRS[7]=Recognizer.RS_OnlyOneMaxEdge
+Classificator=\#Mon Mar 28 14\:26\:48 EDT 2011\r\nBoundType\=1\r\nfoF1lowerDelta\=0.3\r\nfoEupperDelta\=0.3\r\napplyUncertainties\=true\r\nfoF1lowerDelta_lowACL\=0.3\r\nfoEupperDelta_lowACL\=0.6\r\nfoF2upperDelta\=0.3\r\nAnchorPointSelectionAlgorithm\=Try all possible combinations\r\nfoF2upperDelta_lowACL\=0.8\r\nfoF1upperDelta\=0.3\r\nfoElowerDelta\=0.3\r\nFitQualityAlgorithm\=Sum precisely with weights\r\nfoF1upperDelta_lowACL\=0.3\r\nfoElowerDelta_lowACL\=0.3\r\nfoF2lowerDelta_lowACL\=0.3\r\nfoF2lowerDelta\=0.4\r\n
+selRsProp[12]=\#Mon May 15 14\:20\:10 EDT 2006\r\nDistanceScale\=100.0\r\nAngleDistLambda\=40\r\nSegmentConnectionThreshold\=35\r\n
+selRsProp[0]=\#Fri Jun 05 14\:14\:36 EDT 2009\r\nglobalThreshold\=9\r\nenableCodeLeakageRemoval\=true\r\ncodeLeakageThresholdLevel_dB\=17\r\n
+selRsProp[3]=
+selRsProp[6]=
+selRS[10]=Recognizer.RS_Clusterer
+selRsProp[9]=\#Thu May 18 09\:25\:39 EDT 2006\r\nDistanceAttenuationLaw\=0.3\r\nStepRadius\=1.0\r\nAutoTerminationOfEvolving\=true\r\nRotorModel\=Circular\r\nRestrictVerticals\=false\r\nProcessLengthTemperature\=30\r\nMidZoneRange\=7.0\r\nWeightEnhancesContribution\=true\r\nStartTemperature\=20.0\r\nNearZoneRange\=2.0\r\nDeadZoneCosineLimit\=0.7071067811865476\r\nColorMatchEnhancesContribution\=false\r\nStopTemperature\=5.0\r\nDeadZone\=Pre-synaptic\r\nAutoTemperatureAdjusting\=true\r\nTerminatingEnergyChange\=0.10000000149011612\r\nStartRadius\=10.0\r\nAutoTemperatureCoef\=35.0\r\nBetaAngleTerm\=0.1\r\n
+selRS[2]=ARTIST.RS_RemoveNotVertical
+selRS[13]=Recognizer.RS_CollectTraces
+selRS[5]=ARTIST.RS_Ionogram2Image
+selRS[8]=Recognizer.RS_Histogram
+selRsProp[10]=\#Mon May 15 15\:03\:54 EDT 2006\r\nLinkRangeY\=11.0\r\nLinkRangeX\=7.0\r\nClosenessCriterion\=Alpha and Beta\r\nClusteringAlgorithm\=All with specified fit or better\r\nMinFitForClusterConnection\=0.20000000298023224\r\nMaximumClusterOverlap\=0\r\nRemoveConflictingNextRotorLinks\=true\r\n
+selRsProp[13]=
+selRsProp[1]=
+selRsProp[4]=
+selRsProp[7]=
+selRS[11]=Recognizer.RS_SegmentsBuilder_RemoveDuplicates
+selRS[0]=ARTIST.RS_SetupIonogram
+selRS[3]=ARTIST.RS_RemoveLeakages
+selRS[6]=Recognizer.RS_MedianFilter
+selRS[9]=AnnaTraceRecognizer.RS_Anna

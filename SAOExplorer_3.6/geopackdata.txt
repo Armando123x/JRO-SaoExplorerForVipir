@@ -1,0 +1,55 @@
+GeopackData V3.0
+;  Format versions 2.0 and 3.0 are the same, 3.0 is recommended to put
+;  here because of early version software hack
+;
+;  File structure
+;  1) This the text file.
+;  2) If line starts with semicolon(;) or sharp(#) symbols or line consist
+;     of only spaces then it considered as comment line otherwice it 
+;     considered as data line (exclusion 1st line)
+;  3) First line should start with "GeopackData "
+;  4) All subsequent lines are either comment or data lines
+;  5) data lines contains for items divided by commas:
+;     <DateTime>, <G10>, <G11>, <H11>
+;     where <DateTime> can be presented using one of the following forms:
+;           yyyy
+;           yyyy/MM
+;           yyyy/MM/dd
+;           yyyy/MM/dd (DDD)
+;           yyyy/MM/dd (DDD) HH
+;           yyyy/MM/dd HH
+;           yyyy/MM/dd (DDD) HH:mm
+;           yyyy/MM/dd HH:mm
+;           yyyy/MM/dd (DDD) HH:mm:ss
+;           yyyy/MM/dd HH:mm:ss
+;
+;     instead slash (/) symbol you can use also dot (.) or dash(-) symbols.
+;
+;     and <G10>, <G11> and <H11> are geodipole moment coefficient that
+;     correspond given datetime (for last data line it have a little
+;     different meaning, see later)
+;  6) All data line should be given in ascending time order.
+;  7) Last data line has slightly different meaning:
+;     <DateTime> is the time from which it is not recommended to use
+;     GeoPack.
+;     <G10>, <G11> and <H11> are linear extrapolation delta per year for
+;     G10, G11 and H11 beginning from previous data line Date/Time
+
+;           G10        G11         H11
+1945.01.01, 30594.00,  -2285.00,   5810.00
+1950.01.01, 30554.00,  -2250.00,   5815.00
+1955.01.01, 30500.00,  -2215.00,   5820.00
+1960.01.01, 30421.00,  -2169.00,   5791.00
+1965.01.01, 30334.00,  -2119.00,   5776.00
+1970.01.01, 30220.00,  -2068.00,   5737.00
+1975.01.01, 30100.00,  -2013.00,   5675.00
+1980.01.01, 29992.00,  -1956.00,   5604.00
+1985.01.01, 29873.00,  -1905.00,   5500.00
+1990.01.01, 29775.00,  -1848.00,   5406.00
+1995.01.01, 29692.00,  -1784.00,   5306.00
+2000.01.01, 29619.40,  -1728.20,   5186.10
+2005.01.01, 29554.63,  -1669.05,   5077.99
+2010.01.01, 29496.50,  -1585.90,   4945.10
+2015.01.01, 29442.00,  -1501.00,   4797.10
+2020.01.01, 29404.80,  -1450.90,   4652.50
+2026.01.01,    -5.70,      7.40,    -25.90

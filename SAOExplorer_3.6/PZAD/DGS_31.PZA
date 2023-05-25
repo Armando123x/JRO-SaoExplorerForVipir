@@ -1,0 +1,15 @@
+Automatic
+;
+; PZAD Color Translation Table
+;
+; Automatic table for Z=3(B) T=1(5)
+;
+;Color	Name	O/X	Zenith	Azimuth		Doppler
+;
+1	ON++	0 	1  	1            	67      	
+2	ON-	0 	1  	1            	23      	
+9	xn--	1 	1  	1            	01      	
+10	xn-	1 	1  	1            	23      	
+11	xn+	0 	1  	7            	45      	
+12	xn++	0 	1  	7            	67      	
+13	ON+	0 	1  	1            	45      	

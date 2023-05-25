@@ -1,0 +1,27 @@
+#(c) UMLCAR, Recognition Step list and properties File, v 1.0 
+#Wed Jan 14 11:28:01 EST 2009
+selRsProp[11]=
+selRsProp[2]=
+selRsProp[5]=
+selRsProp[8]=\#Thu Mar 01 15\:23\:59 EST 2007\r\nLinkRangeY\=11.0\r\nLinkRangeX\=7.0\r\nClosenessCriterion\=Alpha and Beta\r\nClusteringAlgorithm\=Allow overlaps with small delta-y\r\nMinFitForClusterConnection\=0.30000001192092896\r\nMaximumClusterOverlap\=0\r\nRemoveConflictingNextRotorLinks\=false\r\n
+selRS[1]=ARTIST.RS_RemoveMultiples
+selRS[4]=ARTIST.RS_Ionogram2Image
+selRS[7]=AnnaTraceRecognizer.RS_Anna
+Classificator=\#Wed Jan 14 11\:28\:01 EST 2009\r\napplyUncertainties\=false\r\nFitQualityAlgorithm\=Sum precisely with weights\r\nAnchorPointSelectionAlgorithm\=Try all possible combinations\r\n
+selRsProp[0]=\#Fri Feb 09 09\:59\:37 EST 2007\r\nglobalThreshold\=12\r\nenableCodeLeakageRemoval\=false\r\ncodeLeakageThresholdLevel_dB\=0\r\n
+selRsProp[3]=
+selRsProp[6]=\#Tue Feb 20 16\:27\:33 EST 2007\r\nuseWeight\=false\r\ncloseZone\=20.0\r\nnumberOfSectors\=36\r\nrestrictVerticals\=false\r\n
+selRS[10]=Recognizer.RS_CombineSegments_StraightGap
+selRsProp[9]=
+selRS[2]=ARTIST.RS_RemoveNotVertical
+selRS[5]=Recognizer.RS_EdgeDetector_A45Duo
+selRS[8]=Recognizer.RS_Clusterer
+selRsProp[10]=\#Thu Feb 01 11\:59\:01 EST 2007\r\nDistanceScale\=40.0\r\nAngleDistLambda\=40\r\nAllowSegmentReconnection\=false\r\nSegmentConnectionThreshold\=35\r\n
+selRsProp[1]=
+selRsProp[4]=
+selRsProp[7]=\#Wed Feb 21 11\:18\:38 EST 2007\r\nDistanceAttenuationLaw\=0.3\r\nStepRadius\=1.0\r\nAutoTerminationOfEvolving\=true\r\nRotorModel\=Circular\r\nRestrictVerticals\=false\r\nProcessLengthTemperature\=30\r\nMidZoneRange\=7.0\r\nWeightEnhancesContribution\=true\r\nStartTemperature\=20.0\r\nNearZoneRange\=2.0\r\nDeadZoneCosineLimit\=0.766044443118978\r\nColorMatchEnhancesContribution\=false\r\nStopTemperature\=5.0\r\nDeadZone\=Pre-synaptic\r\nAutoTemperatureAdjusting\=true\r\nTerminatingEnergyChange\=0.10000000149011612\r\nStartRadius\=10.0\r\nAutoTemperatureCoef\=8.0\r\nBetaAngleTerm\=0.1\r\n
+selRS[11]=Recognizer.RS_CollectTraces
+selRS[0]=ARTIST.RS_SetupIonogram
+selRS[3]=ARTIST.RS_RemoveLeakages
+selRS[6]=Recognizer.RS_Histogram
+selRS[9]=Recognizer.RS_SegmentsBuilder_RemoveDuplicates

@@ -1,0 +1,100 @@
+
+DIGISONDE STATION U.D.D. FILE
+
+*304  STATION NAME               <Fortaleza>
+*307  URSI STATION CODE          <FZA0M>
+*101  GEOGRAPHIC LATITUDE        <-3.9> degrees
+*102  GEOGRAPHIC EAST LONGITUDE  <321.6> degrees
+
+The following information changes with time and only
+approximate values are given here:
+
+*104  GYROFREQUENCY              <0.64> MHz
+*105  DIP ANGLE                  <-14> degrees
+*106  DECLINATION                <-20> degrees
+
+DIGISONDE MODEL
+ 1  DGS 256
+ 2  DPS 1
+ 3  DPS 4
+ 4  DPS-4S
+ 5  DPS-4D
+*032 <3>
+
+ANTENNA ARRAY LAYOUT
+
+Standard or mirror layouts: Equilateral triangle with antenna 1 in the middle
+Standard: antennas are counted from the center counterclockwise
+Mirror: antennas are counted from the center clockwise
+
+  0  non-standard
+  1  seven antennas standard pattern ---+
+  2  seven antennas mirrored pattern     \ 
+                                          > standard layouts
+  3  four antennas standard pattern  ---+/ 
+  4  four antennas mirrored pattern
+*090 <3>
+
+
+For standard or mirror layout, specify DEVN and MAXDIST:
+
+ANTENNA DEVN - deviation in degrees of direction 3-1 from X-axis.
+               X axis is line going from antenna 3 to antenna 2.
+               X axis is not necessarily points to north. See *079
+               Values from -180 to 180. Positive means counter-clockwise.
+               This parameter is used when <090> != 0 
+*091 < -30 >
+
+ANTENNA MAXDIST - The max distance between antennas in meters.
+                  This parameter is used when <090> != 0 
+                  4-antennas standard/mirror layouts: MAXDIST = triangle side
+                  7-antennas standard/mirror layouts  MAXDIST = outer triangle side
+*092 < 60 >
+
+
+ANTENNA PATTERN FOR IONOGRAM DATA 
+
+Antenna Pattern is needed only to interpret directions in BEM/RSF ionograms 
+
+  0  Standard per Manual
+  1  180 deg rotation (Karachi,Pakistan, Beijing,China, Kokubunji,Japan)
+  2  Mirror Image (Millstone, Beveridge, Goose Bay)
+  3  None of the above
+*086 < 0 >
+
+
+ANTENNA POSITIONS (X Y Z)
+
+Don't specify these for standard/mirror layouts with DEVN and MAXDIST given
+Assume the (central) antenna 1 at (0, 0, 0)
+All length are in meters relative to antenna 1
+The coordinate system has to be right hand with Z pointing up.
+Select X along one of the triangle sides closest to North direction
+Then X points roughly North and Y points roughly West
+Don't specify seven antennas for four antenna configuration
+Z axis data are ignored, so far there are no algorithms 
+to analyze data from antennas at different heights
+
+        Ant1    Ant2    Ant3    Ant4  
+*080 <  0.00,  30.00, -30.00,   0.00  > X
+*081 <  0.00,  17.32,  17.32, -34.64  > Y
+*082 <  0.00,   0.00,   0.00,   0.00  > Z
+
+DECLINATION (angle) OF THE ANTENNA ARRAY X-AXIS 
+from the *Geographic* North Pole.
+This determines how antenna array is rotated relative to Geographic North
+Do not use compass North here, geomagnetic pole changes its location with time
+Values from 0 to 180 degrees mean clockwise declination and values
+from 0 to -180 degrees mean anti-clockwise declination
+
+*079 < -20 >
+
+CONTACT INFORMATION
+*410 < Dr. Mangalathayil Ali Abdu >
+*411 < INPE, Division of Aeronomy >
+*412 < Av dos Astronautas, 1.758 Jd. Granja - CEP: 12227-010 Sao Jose dos Campos - SP Brasil >
+*413 < maabdu@dae.inpe.br >
+
+=============================================================================
+// *600 < 2002.02.01 14:00:00 > Example of time stamp
+=============================================================================

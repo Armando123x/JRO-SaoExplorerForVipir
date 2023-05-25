@@ -1,0 +1,117 @@
+; this is the ARTIST text data format specification file
+; to edit this file, please refer to ADEP ARTIST data code
+; this file specifies the standard ADEP output format IIWG
+
+; date Sep. 17, 1998
+
+; for data index
+; code = output data order, code 0 for data file index
+; adep = adep system data assign number, 0 for index
+; item = total items in index
+; max = maximum number of item per line
+; int = format of data (int, real, hex, exp) (int 3) same as I3
+; code 1 = second data group in the data file,  code 2, code 3
+; adep = adep system data assign number, 0 for index, see table
+; item = total items per line
+; max = maximum value of the data
+; min = minimum value of the data
+; hex 1 = Z1 ( A )
+; int 2 = I2 ( 12 )
+; real 5, 2 = F5.2 ( 12.34 )
+; exp 9, 4, 1 = E9.4.1 ( 1.3456E+1 )
+
+; code 0 for data file index
+code 0 = adep 0, item 40, max 80, min 0, int 3;
+; code 1 for station constants 
+code 1 = adep 3, item 16, max 999, min -99, real 7, 3;
+; code 2 for station system description
+code 2 = adep 4, item 120, max 9, min 0, char 1;
+; code 3 for measurement preface
+code 3 = adep 1, item 120, max 15, min 0, hex 1;
+; code 4 for scaled parameters
+code 4 = adep 5, item 15, max 9999, min 0, real 8, 3;
+; code 5 for ARTIST analysis flags
+code 5 = adep 6, item 60, max 99, min 0, int 2;
+; code 6 for Doppler frequency translation table 
+code 6 = adep 17, item 16, max 999, min -99, real 7, 3;
+; code 7 for F2 layer virtual height
+code 7 = adep 18, item 15, max 9999, min 0, real 8, 3;
+; code 9 for F2 layer amplitude
+code 9 = adep 20, item 40, max 99, min 0, int 3;
+; code 10 for F2 layer Doppler number
+code 10 = adep 21, item 120, max 9, min 0, int 1;
+; code 11 for F2 layer frequency table
+code 11 = adep 25, item 15, max 32, min 0, real 8, 3;
+; code 12 for F1 layer virtual height
+code 12 = adep 26, item 15, max 9999, min 0, real 8, 3;
+; code 14 for F1 layer amplitude
+code 14 = adep 28, item 40, max 99, min 0, int 3;
+; code 15 for F1 layer Doppler number
+code 15 = adep 29, item 120, max 9, min 0, int 1;
+; code 16 for F1 layer frequency table
+code 16 = adep 33, item 15, max 32, min 0, real 8, 3;
+; code 17 for E layer virtual height
+code 17 = adep 34, item 15, max 999, min 0, real 8, 3;
+; code 19 for E layer amplitude
+code 19 = adep 36, item 40, max 99, min 0, int 3;
+; code 20 for E layer Doppler number
+code 20 = adep 37, item 120, max 9, min 0, int 1;
+; code 21 for E layer frequency table
+code 21 = adep 41, item 15, max 32, min 0, real 8, 3;
+; the following codes for X trace, currently not available
+code 22 = adep 44, item 15, max 999, min 0, real 8, 3;
+code 23 = adep 46, item 40, max 99, min 0, int 3;
+code 24 = adep 47, item 120, max 9, min 0, int 1;
+code 25 = adep 51, item 15, max 32, min 0, real 8, 3;
+code 26 = adep 52, item 15, max 9999, min 0, real 8, 3;
+code 27 = adep 54, item 40, max 99, min 0, int 3;
+code 28 = adep 55, item 120, max 9, min 0, int 1;
+code 29 = adep 59, item 15, max 32, min 0, real 8, 3;
+code 30 = adep 60, item 15, max 9999, min 0, real 8, 3;
+code 31 = adep 62, item 40, max 99, min 0, int 3;
+code 32 = adep 63, item 120, max 9, min 0, int 1;
+code 33 = adep 67, item 15, max 32, min 0, real 8, 3;
+; the following codes for trace median amplitude, currently not available
+code 34 = adep 14, item 40, max 99, min 0, int 3;
+code 35 = adep 15, item 40, max 99, min 0, int 3;
+code 36 = adep 16, item 40, max 99, min 0, int 3;
+; code 37 for F2 layer true height coefficients
+code 37 = adep 10, item 10, max 999, min -999, exp 11, 6, 1;
+; code 38 for F1 layer true height coefficients
+code 38 = adep 11, item 10, max 999, min -999, exp 11, 6, 1;
+; code 39 for E layer true height coefficients
+code 39 = adep 12, item 10, max 999, min -999, exp 11, 6, 1;
+; code 40 for valley coefficients
+code 40 = adep 13, item 10, max 999, min -999, exp 11, 6, 1;
+; code 41 for adep editor update flags
+code 41 = adep 8, item 120, max 9, min 0, int 1;
+; code 42 for UMLCAR valley coefficients
+code 42 = adep 13, item 11, max 999, min -999, exp 11, 6, 1;
+; code 43 for Es layer virtual height
+code 43 = adep 34, item 15, max 999, min 0, real 8, 3;
+; code 44 for Es layer amplitude
+code 44 = adep 36, item 40, max 99, min 0, int 3;
+; code 45 for Es layer Doppler number
+code 45 = adep 37, item 120, max 9, min 0, int 1;
+; code 461 for Es layer frequency table
+code 46 = adep 41, item 15, max 32, min 0, real 8, 3;
+; code 47 for Ea layer virtual height
+code 47 = adep 0, item 15, max 999, min 0, real 8, 3;
+; code 48 for Ea layer amplitude
+code 48 = adep 0, item 40, max 99, min 0, int 3;
+; code 49 for Ea layer Doppler number
+code 49 = adep 0, item 120, max 9, min 0, int 1;
+; code 50 for Ea layer frequency table
+code 50 = adep 0, item 15, max 32, min 0, real 8, 3;
+; code 51 for profile true heights
+code 51 = adep 0, item 15, max 9999, min 0, real 8, 3;
+; code 52 for profile plasma frequencies
+code 52 = adep 0, item 15, max 999, min 0, real 8, 3;
+; code 53 for profile electron densities
+code 53 = adep 0, item 15, max 999, min -999, exp 8, 3, 1;
+; code 54 for qualifying letters
+code 54 = adep 0, item 120, max 255, min 0, char 1;
+; code 55 for descriptive letters
+code 55 = adep 0, item 120, max 255, min 0, char 1;
+; code 56 for trace and profile flags
+code 56 = adep 0, item 120, max 9, min 0, int 1;

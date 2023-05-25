@@ -1,0 +1,18 @@
+Automatic
+;
+; PZAD Color Translation Table
+;
+; Automatic table for Z=1,5,9,D T=3,7
+;
+;Color	Name	O/X	Zenith	Azimuth		Doppler
+;
+1	ESE	0 	12 	9            	34
+2	WNW	0 	12 	3            	34
+3	WSW	0 	12 	5            	34
+4	V-	0 	0  	0            	3    	
+5	V+	0 	0  	0            	4
+9	Vx-	1 	0  	0            	3    	
+10	Vx+	1 	0  	0            	4
+11	S	0 	12 	7            	34
+13	N	0 	12 	1            	34
+14	ENE	0 	12 	b            	34

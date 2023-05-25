@@ -1,0 +1,13 @@
+default
+;
+; PZAD Color Translation Table
+;
+; Automatic table for PGH data
+;
+;Color	Name	O/X	Zenith	Azimuth		Doppler
+;
+1	??	0 	0  	0            	0       	
+5	+0	0 	0  	0            	3
+7	+15	0 	0  	0            	5
+9	+0	1 	0  	0            	3    	
+10	+15	1 	0  	0            	5    	

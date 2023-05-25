@@ -1,0 +1,10 @@
+Precise h'
+;
+; PZAD Color Translation Table
+;
+; User Defined Data
+;
+;Color	Name	O/X	Zenith	Azimuth		Doppler
+;
+5	O	0 	0  	0            	4       	
+9       X	1       0       0               4567
