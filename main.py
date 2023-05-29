@@ -398,7 +398,7 @@ class saoVipi(object):
                         
                         if len(lista)==1:
                             
-                            if not os.path.isdir(os.path.dirname(PATH_SAO)):
+                            if not os.path.isdir(PATH_SAO):
                                 os.mkdir(PATH_SAO)
                                 
                             for file in lista:
