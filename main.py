@@ -446,17 +446,14 @@ class saoVipi(object):
 
                        
            
-    def __click(self,posicion_boton):
+    def __click(self,posicion_boton,number= 1):
         
             x, y = pyautogui.center(posicion_boton)
             # Realiza el clic en el centro del botón
-            pyautogui.click(x, y)        
+            pyautogui.click(x, y,clicks=number)        
             pyautogui.sleep(0.3)
     
-    def __doubleclick(self,value):
-        x,y = pyautogui.center(value)
-        pyautogui.doubleClick(x,y)
-        pyautogui.sleep(0.1)
+ 
             
     def __release_SAOExplorer(self,n_adjust=10):
     
@@ -597,7 +594,7 @@ class saoVipi(object):
             print("Se seleccionó el boton de Db SNR")
         
         # Doble click        
-        self.__doubleclick(posicion_boton)        
+        self.__click(posicion_boton,3)        
         
         for letter in str(TH_DB):
             pyautogui.typewrite(letter)
@@ -816,8 +813,8 @@ class saoVipi(object):
         except:
             ValueError("Revisar la conexión al FTP. Posible falla: Conexión a Internet \
                        o credenciales FTP.")
-        
-        return ftp
+        else:
+            return ftp
 
             
     def __ftp_download(self,ftp ,pftp,pout,tar=False):
