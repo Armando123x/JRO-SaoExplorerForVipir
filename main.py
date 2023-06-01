@@ -302,6 +302,7 @@ class saoVipi(object):
                     print("Se conecta al servidor {}".format(SRC_FTP))
                     
                 ftp = self.__ftp_connection()
+                ftp.sock.settimeout(ftp_timeout)
                 
                 
                 try:
