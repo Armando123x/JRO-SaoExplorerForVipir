@@ -276,10 +276,15 @@ def processto(array):
                             except:
                                 print("Existe un problema con los datos NGI del archivo {}. No será guardado.".format(file))
                                 grmf.close()
-                                ds.close()
-                                
-                                os.remove(filegrm)
-                                os.remove(file)
+                                ds.close()  
+                                try:
+                                    os.remove(filegrm)
+                                except:
+                                    pass
+                                try:
+                                    os.remove(file)
+                                except:
+                                    pass
                                 return False
                         #print(ampdpo,faazo)
                         ampmp=int(max(powerXi[k*4+j*1+saltof])/3)
@@ -311,10 +316,13 @@ def processto(array):
             
         except:
             print("Existe un problema con los datos NGI del archivo {}. No será guardado.".format(file))
-           
-            ds.close()
+            try:
+                ds.close()
+                
+                os.remove(filegrm)
+                os.remove(file)
+            except:
+                pass
             
-            os.remove(filegrm)
-            os.remove(file)
             return False             
  

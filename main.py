@@ -95,7 +95,7 @@ class saoVipi(object):
             if month0==month1:
                 days = DAYS[month0-1]
                 if month0 == 2 and es_bisiesto(year0): days=29
-                for day in range(1,days+1):
+                for day in range(day0,day1+1):
                     buff='{}/{:04d}/{:02d}/{:02d}/ngi'.format(PATH_FTP,year0,month0,day)
                     paths.append(buff)
                     
@@ -466,7 +466,7 @@ class saoVipi(object):
         pyautogui.sleep(10)
         
         posicion_boton = None
-        confidence=.9
+        confidence=.75
         while posicion_boton is None:
             posicion_boton = pyautogui.locateOnScreen(BUTON_ALL, confidence=confidence)
             confidence-=.005
@@ -484,7 +484,7 @@ class saoVipi(object):
 
         #se está en otro directorio, dirigirnos a desktop
         posicion_boton = None
-        confidence=.65
+        confidence=.75
         while posicion_boton is None:
             posicion_boton = pyautogui.locateOnScreen(HOME, confidence=confidence)
             confidence-=.005
@@ -501,7 +501,7 @@ class saoVipi(object):
         #########################################################
         # Ya estamos en desktop, ahora seleccionamos la carpeta
         posicion_boton = None
-        confidence=.9
+        confidence=.75
         while posicion_boton is None:
             posicion_boton = pyautogui.locateOnScreen(ATEMP, confidence=confidence)
             confidence-=.05
