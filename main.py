@@ -610,6 +610,16 @@ class saoVipi(object):
         # .-> Presionar w  -> Ajustar 
         ############################################################
         
+        def check_if_correct_window(self):
+            confidence=.9
+            posicion_boton  = None
+            while posicion_boton is None:
+                posicion_boton = pyautogui.locateOnScreen(LAYERS, confidence=confidence)
+                confidence-=.07
+                if confidence < 0.5: break
+            self.__click(posicion_boton,2)    
+            
+
         
         
         pyautogui.sleep(0.5)
@@ -621,13 +631,17 @@ class saoVipi(object):
             # Ajustamos la curva
             pyautogui.typewrite('\n') 
             pyautogui.sleep(0.3) 
+            check_if_correct_window()
             pyautogui.typewrite('w')
+            
             # Delay por ajuste 
             pyautogui.sleep(TIME_SLEEP_BY_ADJUST)
             
             # Pasamos al siguiente ajuste
+           
             pyautogui.typewrite('\n')  
             pyautogui.sleep(0.3) 
+            check_if_correct_window()
             pyautogui.typewrite('x')
             pyautogui.sleep(1.5)
             
@@ -649,7 +663,7 @@ class saoVipi(object):
         pyautogui.sleep(5)
         #Esperamos 10 o 15 segundos para detectar algun error
     
-        pool_warning.terminate()
+        # pool_warning.terminate()
         
 ####################
         # Guardamos lo ajustado a un archivo .SAO
@@ -892,8 +906,8 @@ class saoVipi(object):
  
      
 if __name__ =='__main__':
-    ini_date="2018/01/01"
-    fin_date="2023/05/01"
+    ini_date="2018/05/01"
+    fin_date="2018/05/20"
     obj = saoVipi(ini_date=ini_date,
                   fin_date=fin_date,
                   verbose=True)

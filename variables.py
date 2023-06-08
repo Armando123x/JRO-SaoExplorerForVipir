@@ -33,6 +33,7 @@ ERROR = 'error.png'
 CLOSE = 'cerrar.png'
 ESCRITORIO = 'escritorio.png'
 DB_SNR  = 'set_frequency.png'
+LAYERS = 'layers.png'
 
 SRC_FTP ='lisn.igp.gob.pe'
 USER_FTP = 'cesar'
@@ -58,7 +59,7 @@ DAYS = [31,28,31,30,31,30,31,31,30,31,30,31]
 # Por el momento, está deshabilitado la opción daily.
 
 SAVE_SAO = 'daily'
-TH_DB = 21
+TH_DB = 24
 
 
 ########################################################################
