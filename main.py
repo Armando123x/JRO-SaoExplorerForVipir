@@ -468,10 +468,10 @@ class saoVipi(object):
         pyautogui.sleep(10)
         
         posicion_boton = None
-        confidence=.75
+        confidence=.86
         while posicion_boton is None:
             posicion_boton = pyautogui.locateOnScreen(BUTON_ALL, confidence=confidence)
-            confidence-=.005
+            confidence-=.05
             if confidence<0.4: LookupError("No se encontró el botón de abrir carpeta para seleccionar \
                                                         todos los archivos en SaoExplorer.")
             pyautogui.sleep(0.5)
@@ -486,10 +486,10 @@ class saoVipi(object):
 
         #se está en otro directorio, dirigirnos a desktop
         posicion_boton = None
-        confidence=.75
+        confidence=.87
         while posicion_boton is None:
             posicion_boton = pyautogui.locateOnScreen(HOME, confidence=confidence)
-            confidence-=.005
+            confidence-=.05
             if confidence<0.4: LookupError("No se encontró el botón de HOME en el SaoExplorer.")            
             pyautogui.sleep(0.5)
         
@@ -503,7 +503,7 @@ class saoVipi(object):
         #########################################################
         # Ya estamos en desktop, ahora seleccionamos la carpeta
         posicion_boton = None
-        confidence=.75
+        confidence=.9
         while posicion_boton is None:
             posicion_boton = pyautogui.locateOnScreen(ATEMP, confidence=confidence)
             confidence-=.05
@@ -520,7 +520,7 @@ class saoVipi(object):
         #Seleccionamos un archivo .GRM 
         
         posicion_boton = None
-        confidence=.75
+        confidence=.8
         
         while posicion_boton is None:
             posicion_boton = pyautogui.locateOnScreen(GRM_FILE, confidence=confidence)
@@ -610,18 +610,21 @@ class saoVipi(object):
         # .-> Presionar w  -> Ajustar 
         ############################################################
         
-        def check_if_correct_window(self):
+        def check_if_correct_window():
             confidence=.9
             posicion_boton  = None
             while posicion_boton is None:
                 posicion_boton = pyautogui.locateOnScreen(LAYERS, confidence=confidence)
                 confidence-=.07
-                if confidence < 0.5: break
-            self.__click(posicion_boton,2)    
+                if confidence < 0.5: return None 
+            
+            return posicion_boton  
             
 
         
-        
+        flag_set = False
+        bt = None 
+
         pyautogui.sleep(0.5)
         if self.verbose:
             print("Empezamos con el ajuste....")        
@@ -629,9 +632,15 @@ class saoVipi(object):
         for _ in range(n_adjust):
             
             # Ajustamos la curva
+            if flag_set is False:
+                bt = check_if_correct_window()
+                if bt is None:
+                    raise  RuntimeError("Error en la ejecución del programa SAOExplorer.")
+                
+
             pyautogui.typewrite('\n') 
-            pyautogui.sleep(0.3) 
-            check_if_correct_window()
+            pyautogui.sleep(0.3)  
+            self.__click(bt,2)
             pyautogui.typewrite('w')
             
             # Delay por ajuste 
@@ -641,7 +650,8 @@ class saoVipi(object):
            
             pyautogui.typewrite('\n')  
             pyautogui.sleep(0.3) 
-            check_if_correct_window()
+            self.__click(bt,2)
+
             pyautogui.typewrite('x')
             pyautogui.sleep(1.5)
             
