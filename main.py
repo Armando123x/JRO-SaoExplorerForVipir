@@ -335,7 +335,7 @@ class saoVipi(object):
                                 #archivo por descargar
                                 pout = os.path.join(SRC_TEMP,file)
                                 
-                                if self.__ftp_download(ftp,file,pout):
+                                if self.__ftp_download(ftp,file,pout) == True:
                                     #archivo descargado
                                    
                                     files_saved.append(file)
@@ -391,6 +391,7 @@ class saoVipi(object):
                 
                 if count >0:
                 # Ahora ejecutamos en obtener el archivo .SAO 
+                    gc.collect()
                     if self.verbose:
                         print("Empezamos con la manipulación del SaoExplorer.....")
                     if self.__release_SAOExplorer(count):
@@ -421,14 +422,15 @@ class saoVipi(object):
                                 self.database.loc[self.database['name_ngi'].isin(files_saved), 'path_sao'] = ruta_destino
                                 self.database.loc[self.database['name_ngi'].isin(files_saved), 'name_sao'] = file 
 
+                                gc.collect()
                                 files_saved = list()
                                 self.save_database()
 
                         elif len(lista)>0:
-                            RuntimeError("Existe diversos archivos SAO en la ruta {}, por lo que es dificil elegir.".format(PATH_DESKTOP))
+                            raise RuntimeError("Existe diversos archivos SAO en la ruta {}, por lo que es dificil elegir.".format(PATH_DESKTOP))
                         
                         else:
-                            RuntimeError("Los archivos SAO no se están \
+                            raise RuntimeError("Los archivos SAO no se están \
                                 guardando en la ruta '{}'".format(PATH_DESKTOP))
                         
                         # Eliminamos la carpeta temporal.
@@ -571,11 +573,11 @@ class saoVipi(object):
                 pyautogui.sleep(0.7)
                 
                 
-        pool_warning = Pool(1,maxtasksperchild=100)
-        pool_warning.apply_async(detect_warning,[])
+        # pool_warning = Pool(1,maxtasksperchild=100)
+        # pool_warning.apply_async(detect_warning,[])
         
-        pool_warning.close()
-        pool_warning.join()
+        # pool_warning.close()
+        # pool_warning.join()
         
         
         ############################################################
@@ -763,7 +765,7 @@ class saoVipi(object):
             # Si existe, se borra
             if os.path.exists(SRC_TEMP):
                 if self.verbose:
-                    print("Existia una carpeta temporal con datos NGI. Se ha borrado todo")
+                    print("Existia una carpeta temporal con datos NGI. Ha sido borrada completamente.")
                 shutil.rmtree(SRC_TEMP)
             else:
                 
@@ -812,7 +814,7 @@ class saoVipi(object):
             ftp.login(user=USER_FTP, passwd=PWD_FTP)
         
         except:
-            ValueError("Revisar la conexión al FTP. Posible falla: Conexión a Internet \
+            raise ValueError("Revisar la conexión al FTP. Posible falla: Conexión a Internet \
                        o credenciales FTP.")
         else:
             return ftp
