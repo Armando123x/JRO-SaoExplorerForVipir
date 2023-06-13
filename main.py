@@ -478,6 +478,8 @@ class saoVipi(object):
 
         
         pyautogui.sleep(3.5)
+
+        
         def cerrar_ventana():
             # Obtener el identificador de la ventana activa
             ventana_activa = win32gui.GetForegroundWindow()
@@ -518,12 +520,17 @@ class saoVipi(object):
             count = 0
 
             while 1:
+                if self.verbose:
+                        print("Buscando el boton {}. Intento: {}".format(button,count+1))
+
+                        
                 while posicion_boton is None:
 
-                    if self.verbose:
-                        print("Buscando el boton {}. Intento: {}".format(button,count+1))
+
                     posicion_boton = pyautogui.locateOnScreen(button, confidence=confidence)
                     confidence -= 0.05
+
+                    pyautogui.sleep(0.19)
                     if confidence < MIN_CONFIDENCE: 
                         pyautogui.sleep(1.5)
                         count+=1; break; 
@@ -532,6 +539,7 @@ class saoVipi(object):
                     break     
                 if count ==3:
                     raise TimeoutError ("No se encontró el botón {}".format(button))
+                
             if self.verbose:
                 print("Se encontró el botón {} en el intento {}".format(button,count+1))
             self.__click(posicion_boton,number=clicks)
