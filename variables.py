@@ -61,6 +61,8 @@ DAYS = [31,28,31,30,31,30,31,31,30,31,30,31]
 SAVE_SAO = 'daily'
 TH_DB = 24
 
+MIN_CONFIDENCE = 0.43
+
 
 ########################################################################
 # timeout for ftp file download in seconds
@@ -150,7 +152,7 @@ def ngi2grm(path1,path2=None):
     
     buff =[[x,path2] for x in list]
      
-    pool = Pool(4,maxtasksperchild=1000)
+    pool = Pool(8,maxtasksperchild=1000)
     
     result =pool.map(processto,buff)
     

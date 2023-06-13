@@ -17,11 +17,12 @@ import gc
 import win32api
 import win32gui
 import win32con
+import win32process as wproc
 
 import distutils.file_util
 
 import shutil 
-
+import psutil
 
 pyautogui.FAILSAFE = False
  
@@ -377,11 +378,7 @@ class saoVipi(object):
                           convertir en el formato GRM.".format(count))
                 
                 bools = ngi2grm(SRC_TEMP)   
-                
-                # #actualizamos la lista 
-                # lista = numpy.array(lista,dtype='object')[bools] 
-                
-                # lista = lista.tolist()
+ 
                 
                 count = count - bools
                 
@@ -394,50 +391,61 @@ class saoVipi(object):
                     gc.collect()
                     if self.verbose:
                         print("Empezamos con la manipulación del SaoExplorer.....")
-                    if self.__release_SAOExplorer(count):
-                        src_sao = os.path.join(PATH_DESKTOP,'*.SAO')
-                        lista = glob.glob(src_sao)
-                        
-                        if len(lista)==1:
-                            
-                            if not os.path.isdir(PATH_SAO):
-                                os.mkdir(PATH_SAO)
-                                
-                            for file in lista:
-                                file = os.path.basename(file)
-                                # Construir la ruta de destino
-                                ruta_file = os.path.join(PATH_DESKTOP, file)
-                                ruta_destino = os.path.join(PATH_SAO, file)
 
-                                #Mover el archivo a la carpeta de destino
-                                shutil.copy(os.path.join(PATH_DESKTOP, file),
-                                            os.path.join(PATH_SAO, file))
+                    attempts = 0 
+                    flag = True
+                    while flag:
+                        if self.__release_SAOExplorer(count):
+                            flag = False
+                            src_sao = os.path.join(PATH_DESKTOP,'*.SAO')
+                            lista = glob.glob(src_sao)
                             
-                                os.remove(ruta_file)
+                            if len(lista)==1:
                                 
-                                if self.verbose:
-                                    print("Se salvó el archivo SAO {} .".format(file))
+                                if not os.path.isdir(PATH_SAO):
+                                    os.mkdir(PATH_SAO)
                                     
-                                # Actualizamos la base de datos
-                                self.database.loc[self.database['name_ngi'].isin(files_saved), 'path_sao'] = ruta_destino
-                                self.database.loc[self.database['name_ngi'].isin(files_saved), 'name_sao'] = file 
+                                for file in lista:
+                                    file = os.path.basename(file)
+                                    # Construir la ruta de destino
+                                    ruta_file = os.path.join(PATH_DESKTOP, file)
+                                    ruta_destino = os.path.join(PATH_SAO, file)
 
-                                gc.collect()
-                                files_saved = list()
-                                self.save_database()
+                                    #Mover el archivo a la carpeta de destino
+                                    shutil.copy(os.path.join(PATH_DESKTOP, file),
+                                                os.path.join(PATH_SAO, file))
+                                
+                                    os.remove(ruta_file)
+                                    
+                                    if self.verbose:
+                                        print("Se salvó el archivo SAO {} .".format(file))
+                                        
+                                    # Actualizamos la base de datos
+                                    self.database.loc[self.database['name_ngi'].isin(files_saved), 'path_sao'] = ruta_destino
+                                    self.database.loc[self.database['name_ngi'].isin(files_saved), 'name_sao'] = file 
 
-                        elif len(lista)>0:
-                            raise RuntimeError("Existe diversos archivos SAO en la ruta {}, por lo que es dificil elegir.".format(PATH_DESKTOP))
-                        
+                                    gc.collect()
+                                    files_saved = list()
+                                    self.save_database()
+
+                            elif len(lista)>0:
+                                raise RuntimeError("Existe diversos archivos SAO en la ruta {}, por lo que es dificil elegir.".format(PATH_DESKTOP))
+                            
+                            else:
+                                raise RuntimeError("Los archivos SAO no se están \
+                                    guardando en la ruta '{}'".format(PATH_DESKTOP))
+                            
+                            # Eliminamos la carpeta temporal.
+                            try:
+                                shutil.rmtree(SRC_TEMP)
+                            except:
+                                print("No se pudo borrar la carpeta temporal de VIPIR.")
+                        elif attempts ==50:
+                            raise RuntimeError("Se alcanzó el máximo de intentos para la ventana de SAOExplorer. Revise programa o vacie memoria.")
                         else:
-                            raise RuntimeError("Los archivos SAO no se están \
-                                guardando en la ruta '{}'".format(PATH_DESKTOP))
-                        
-                        # Eliminamos la carpeta temporal.
-                        try:
-                            shutil.rmtree(SRC_TEMP)
-                        except:
-                            print("No se pudo borrar la carpeta temporal de VIPIR.")
+                            attempts+=1
+                            print("Algo salió mal, volviendo a ejecutar SAOExplorer.")
+
 
                 else:
                     if self.verbose:
@@ -463,70 +471,92 @@ class saoVipi(object):
         #########################################################
         # Lanzamos el explorador
         pool = self.__config_SAOExplorer()
+        pool.close()
+        pool.join()
         #########################################################
+
+
         
-        pyautogui.sleep(10)
-        
-        posicion_boton = None
-        confidence=.86
-        while posicion_boton is None:
-            posicion_boton = pyautogui.locateOnScreen(BUTON_ALL, confidence=confidence)
-            confidence-=.05
-            if confidence<0.4: LookupError("No se encontró el botón de abrir carpeta para seleccionar \
-                                                        todos los archivos en SaoExplorer.")
-            pyautogui.sleep(0.5)
-        if self.verbose:
-            print("Se hizo click en el boton para seleccionar ficheros.")    
-        self.__click(posicion_boton)
-        
+        pyautogui.sleep(3.5)
+        def cerrar_ventana():
+            # Obtener el identificador de la ventana activa
+            ventana_activa = win32gui.GetForegroundWindow()
+
+            # Enviar el mensaje de cierre a la ventana
+            win32api.PostMessage(ventana_activa, win32con.WM_CLOSE, 0, 0)
+
+            time.sleep(1.5)
+            #comprobamos si la ventana está cerrado
+            time_init = time.time()
+
+            flag_check = False
+            while 1:
+
+                time_final = time.time()
+                diff = time_final- time_init
+
+                if flag_check is True and (diff>10):
+                    return False
+
+                if win32gui.IsWindow(ventana_activa):
+                    print("La ventana no se ha logrado cerrar. Forzando cerrado...")
+                    
+                    if flag_check is False:
+
+                        flag_check = True 
+                        _,pid = wproc.GetWindowThreadProcessId(ventana_activa)
+                        proceso = psutil.Process(pid)
+                        proceso.terminate()
+                    
+                else:
+                    return True
+                
+
+        def search_and_click(button,confidence=.7,clicks = 1):
+            posicion_boton = None 
+            confidence = confidence
+            count = 0
+
+            while 1:
+                while posicion_boton is None:
+
+                    if self.verbose:
+                        print("Buscando el boton {}. Intento: {}".format(button,count+1))
+                    posicion_boton = pyautogui.locateOnScreen(button, confidence=confidence)
+                    confidence -= 0.05
+                    if confidence < MIN_CONFIDENCE: 
+                        pyautogui.sleep(1.5)
+                        count+=1; break; 
+
+                if posicion_boton is not None:
+                    break     
+                if count ==3:
+                    raise TimeoutError ("No se encontró el botón {}".format(button))
+            if self.verbose:
+                print("Se encontró el botón {} en el intento {}".format(button,count+1))
+            self.__click(posicion_boton,number=clicks)
+
+
+
+        search_and_click(BUTON_ALL,confidence=.86)
         pyautogui.sleep(1.5)
         #########################################################
         # Confirmar si es desktop 
 
 
         #se está en otro directorio, dirigirnos a desktop
-        posicion_boton = None
-        confidence=.87
-        while posicion_boton is None:
-            posicion_boton = pyautogui.locateOnScreen(HOME, confidence=confidence)
-            confidence-=.05
-            if confidence<0.4: LookupError("No se encontró el botón de HOME en el SaoExplorer.")            
-            pyautogui.sleep(0.5)
-        
-        if self.verbose:
-            print("Se seleccionó el boton Home")
-        self.__click(posicion_boton)
-     
+        search_and_click(HOME,confidence=.87)
         pyautogui.sleep(0.9)
-            
-            
+                     
         #########################################################
         # Ya estamos en desktop, ahora seleccionamos la carpeta
-        posicion_boton = None
-        confidence=.9
-        while posicion_boton is None:
-            posicion_boton = pyautogui.locateOnScreen(ATEMP, confidence=confidence)
-            confidence-=.05
-            if confidence<0.4: LookupError("No se encontró el directorio atemp en el SaoExplorer.")  
-            pyautogui.sleep(0.2)
-        if self.verbose:
-            print("Se seleccionó el boton Temp")      
-                  
-        self.__click(posicion_boton)
+        search_and_click(ATEMP,confidence=.9)
         #presionamos enter para entrar al directorio
         pyautogui.typewrite('\n')
         pyautogui.sleep(0.7)    
         # 
         #Seleccionamos un archivo .GRM 
-        
-        posicion_boton = None
-        confidence=.8
-        
-        while posicion_boton is None:
-            posicion_boton = pyautogui.locateOnScreen(GRM_FILE, confidence=confidence)
-            confidence-=.05
-            if confidence<0.4: LookupError("No se encontró algun archivo .GRM en el SaoExplorer.")  
-        self.__click(posicion_boton)
+        search_and_click(GRM_FILE,confidence=.8)
         #presionamos enter para entrar al directorio
         pyautogui.typewrite('\n')
         #Esperamos a que cargue todos los archivos
@@ -536,69 +566,12 @@ class saoVipi(object):
         # Logramos abrir las carpetas 
         # Ahora se procede a buscar el boton ionograma 
      
-        
-       
-        
-        posicion_boton = None     
-        confidence = .8
-        if self.verbose:
-            print("Buscando boton de Ionograma")
-            
-        while posicion_boton is None:
-            posicion_boton = pyautogui.locateOnScreen(IONOGRAMA, confidence=confidence)
-            confidence-=.05
-            if confidence<0.4: LookupError("No se encontró el botón de Ionograma en el SaoExplorer.")                 
-            pyautogui.sleep(0.12)
-            
-        if self.verbose:
-            print("Se seleccionó el boton de Ionograma")
-        self.__click(posicion_boton)
-        ############################################################
-        # Creamos una funcion pequeña para la detección de mensajes
- 
- 
-        def detect_warning():
- 
-            while 1:
-                bordes = None
-                confidence= 0.5
-                while bordes is None:
-                    pyautogui.sleep(0.05)
-                    bordes = pyautogui.locateOnScreen(ERROR, confidence=confidence)
-                    
-                    gc.collect()
-                if self.verbose:
-                    RuntimeWarning("Se detectó una ventana de error o emergencia. Ha sido inmediatamente cerrada.")
-                pyautogui.typewrite('\n')   
-                pyautogui.sleep(0.7)
-                
-                
-        # pool_warning = Pool(1,maxtasksperchild=100)
-        # pool_warning.apply_async(detect_warning,[])
-        
-        # pool_warning.close()
-        # pool_warning.join()
-        
-        
+        search_and_click(IONOGRAMA,confidence=.8)
+    
         ############################################################
         ####### Ajustamos la escala DB por defecto:25
-        posicion_boton = None     
-        confidence = .95
-        if self.verbose:
-            print("Buscando boton de nivel DB Snr")
-            
-        while posicion_boton is None:
-            posicion_boton = pyautogui.locateOnScreen(DB_SNR, confidence=confidence)
-            confidence-=.05
-            if confidence<0.4: LookupError("No se encontró el botón DB Snr.")                 
-            pyautogui.sleep(0.02)
-            
-        if self.verbose:
-            print("Se seleccionó el boton de Db SNR")
-        
-        # Doble click        
-        self.__click(posicion_boton,3)        
-        
+        search_and_click(DB_SNR,confidence=.95,clicks=3)     
+
         for letter in str(TH_DB):
             pyautogui.typewrite(letter)
             pyautogui.sleep(0.05)
@@ -634,13 +607,14 @@ class saoVipi(object):
             # Ajustamos la curva
             if flag_set is False:
                 bt = check_if_correct_window()
+                flag_set = True
                 if bt is None:
                     raise  RuntimeError("Error en la ejecución del programa SAOExplorer.")
                 
 
             pyautogui.typewrite('\n') 
             pyautogui.sleep(0.3)  
-            self.__click(bt,2)
+            self.__click(bt,1)
             pyautogui.typewrite('w')
             
             # Delay por ajuste 
@@ -650,108 +624,74 @@ class saoVipi(object):
            
             pyautogui.typewrite('\n')  
             pyautogui.sleep(0.3) 
-            self.__click(bt,2)
+            self.__click(bt,1)
 
             pyautogui.typewrite('x')
-            pyautogui.sleep(1.5)
+            pyautogui.sleep(1.3)
             
             
-        def cerrar_ventana():
-            # Obtener el identificador de la ventana activa
-            ventana_activa = win32gui.GetForegroundWindow()
 
-            # Enviar el mensaje de cierre a la ventana
-            win32api.PostMessage(ventana_activa, win32con.WM_CLOSE, 0, 0)
-        
-        cerrar_ventana()
         #########################################        
-        #Finalmente cerramos la ventana
+        #Finalmente cerramos la ventana de ajistes                
         if self.verbose:
-            print("Cerramos la ventana...")
-        
+            print("Procedemos a cerrar la ventana de ajustes...")        
+        value = cerrar_ventana()
+        if value and self.verbose:
+            print("Cerrado ventana de ajuste con exito.")
+
+        elif value is not True:
+            print ("La ventana de ajuste no se pudo cerrar. Reiniciariamos todo el proceso.")
+            #matamos el pool
+
+            pool.terminate()
+
+            return False 
      
-        pyautogui.sleep(5)
+        pyautogui.sleep(2.5)
         #Esperamos 10 o 15 segundos para detectar algun error
     
-        # pool_warning.terminate()
-        
-####################
-        # Guardamos lo ajustado a un archivo .SAO
-        # 
-        # ##########################################################
-        
-        
-        posicion_boton = None     
-        confidence =.5
-
-        if self.verbose:
-            print("Buscando el boton File")
-        while posicion_boton is None:
-            posicion_boton = pyautogui.locateOnScreen(MENU, confidence=confidence)
-            confidence = confidence-0.05 
-            if confidence<0.4: LookupError("No se encontró el botón de guardado de menú en el SaoExplorer.")
-            pyautogui.sleep(0.05)
-            
-            
-        if self.verbose:
-            print("Se hizo click al botón de Menú.")
-            
-            
-        self.__click(posicion_boton)
-        
-        # Hacemos click en el boton de guardado
-        posicion_boton = None     
-        confidence =.85
-        if self.verbose:
-            print("Buscando el botón SaoAllRecords")
-            
-        while posicion_boton is None:
-            posicion_boton = pyautogui.locateOnScreen(SAVE_SAO_RECORDS, confidence=confidence)
-            confidence = confidence-0.05 
-            if confidence<0.4: LookupError("No se encontró el botón de exportanción de archivos SAO.")
-        
-        self.__click(posicion_boton)
-        
+        search_and_click(MENU,confidence=.7)  
+ 
+        search_and_click(SAVE_SAO_RECORDS,confidence=.85)
+      
+    
         
         if self.verbose:
             print("Se seleccionó el boton de guardado de .SAO")
         pyautogui.sleep(0.5)
         #presionamos enter para crear los archivos en el escritorio 
-        if self.verbose:
-            print("Se guardó todos los archivos .SAO en el escritorio.")
-            
         #nos aseguramos estar en el escritorio
-        posicion_boton = None     
-        confidence =.85
-        if self.verbose:
-            print("Buscando el botón de Desktop")
-            
-        while posicion_boton is None:
-            posicion_boton = pyautogui.locateOnScreen(ESCRITORIO, confidence=confidence)
-            confidence = confidence-0.05 
-            if confidence<0.4: LookupError("No se encontró el botón de exportanción de archivos SAO.")
-
-        self.__click(posicion_boton)        
-        
+        search_and_click(ESCRITORIO,confidence=.85)
+               
         pyautogui.typewrite('\n')
         pyautogui.sleep(0.5)
         pyautogui.typewrite('\n')
-        #Esperamos 20 segundos para el guardado
+        #Esperamos 10 segundos para el guardado
         pyautogui.sleep(10)
         #Cerramos el programa
         if self.verbose:
             print("Se cierra el programa SaoExplorer.....")
 
         # Llamar a la función para cerrar la ventana
-        cerrar_ventana()
+        value = cerrar_ventana()
+
+        if value and self.verbose:
+            print("Cerrado el SaoExplorer con exito.")
+        
+        if value is not True:
+            print("Error en el cerrado del SAOExplorer, se matará el pool y se realizará la operación de nuevo.")
+
+     
+            pool.terminate()
+            return False
+
+
+        pool.terminate()
        
         ##############################################################
-        
-        pool.close()
-        pool.join()
-        pool.terminate()
         #Terminar todos los procesos 
-        pyautogui.sleep(10)
+        gc.collect()
+        pyautogui.sleep(5)
         return True 
         
         
@@ -765,14 +705,14 @@ class saoVipi(object):
             
             if self.ini_date is None:
                  
-                ValueError("Verifique el valor proporcionado a la fecha inicial de obtención de datos.")
+                raise ValueError("Verifique el valor proporcionado a la fecha inicial de obtención de datos.")
                     
             if self.fin_date is None:
                 
                 self.fin_date = self.ini_date
             
             if self.path_explorer is None:
-                AttributeError("Proporcione una ruta donde esté contenido el programa SAOExplorer con el parámetro 'path_explorer'.")
+                raise AttributeError("Proporcione una ruta donde esté contenido el programa SAOExplorer con el parámetro 'path_explorer'.")
             
             self.system = platform.system()
             
@@ -832,16 +772,27 @@ class saoVipi(object):
         
          
     def __ftp_connection(self):
- 
-        try:
-            ftp = FTP(SRC_FTP)
-            ftp.login(user=USER_FTP, passwd=PWD_FTP)
+        attempts = 0
+        time_per_connection = 30
         
-        except:
-            raise ValueError("Revisar la conexión al FTP. Posible falla: Conexión a Internet \
-                       o credenciales FTP.")
-        else:
-            return ftp
+        
+        while 1:
+
+            try:
+                ftp = FTP(SRC_FTP)
+                ftp.login(user=USER_FTP, passwd=PWD_FTP)
+            
+            except:
+                
+                print("Hay problemas con la conexión FTP. Volviendo a conectar dentro de {} segundos. Intento {}/3".format(time_per_connection,attempts+1))
+                time.sleep(time_per_connection)
+                if attempts == 3:
+                    raise ValueError("Revisar la conexión al FTP. Posible falla: Conexión a Internet \
+                            o credenciales FTP.")
+            
+                attempts +=1 
+            else:
+                return ftp
 
             
     def __ftp_download(self,ftp ,pftp,pout,tar=False):
@@ -904,7 +855,7 @@ class saoVipi(object):
         command =  r'cd {} && {}'.format(self.path_explorer,self.bash)
       
  
-        thread = Pool(2,maxtasksperchild=1000)
+        thread = Pool(1,maxtasksperchild=1000)
         
         thread.apply_async(os.system,[command])
         
