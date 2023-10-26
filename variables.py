@@ -14,36 +14,78 @@ import time
 import glob
 #---------------------------------------------------------
 #---------------------------------------------------------
-#---------------------------------------------------------
-#----------- Direcciones de imagenes ---------------------
+dir_files = os.path.join(os.getcwd(),"ext")
 
+def get_fullpath(path):
+    return os.path.join(dir_files,path)
+#---------------------------------------------------------
+
+
+#----------- ---------------Direcciones de imagenes ---------------------
 
 BUTON_ALL   = "buton_all.png"
-MENU        = "file.png"
-CARPETA     = 'files.png'
-MAXIMIZAR   = 'minmaxclose.png'
-DESKTOP     = 'desktop.png'
-SELECT_MENU = 'select_menu.png'
-HOME        = 'home.png'
-IONOGRAMA   = 'Ionograma.png'
-SAVE_SAO_RECORDS = 'save_sao.png'
-GRM_FILE         = 'grm.png'
-ATEMP   = 'atemp.png'
-ERROR = 'error.png'
-CLOSE = 'cerrar.png'
-ESCRITORIO = 'escritorio.png'
-DB_SNR  = 'set_frequency.png'
-LAYERS = 'layers.png'
+BUTON_ALL   = get_fullpath(BUTON_ALL)
 
+MENU        = "file.png"
+MENU        = get_fullpath(MENU)
+
+CARPETA     = 'files.png'
+CARPETA     = get_fullpath(CARPETA)
+
+MAXIMIZAR   = 'minmaxclose.png'
+MAXIMIZAR   = get_fullpath(MAXIMIZAR)
+
+DESKTOP     = 'desktop.png'
+DESKTOP     = get_fullpath(DESKTOP)
+
+SELECT_MENU = 'select_menu.png'
+SELECT_MENU = get_fullpath(SELECT_MENU)
+
+HOME        = 'home.png'
+HOME        = get_fullpath(HOME)
+
+IONOGRAMA   = 'Ionograma.png'
+IONOGRAMA   = get_fullpath(IONOGRAMA)
+
+SAVE_SAO_RECORDS = 'save_sao.png'
+SAVE_SAO_RECORDS = get_fullpath(SAVE_SAO_RECORDS)
+
+GRM_FILE         = 'grm.png'
+GRM_FILE         = get_fullpath(GRM_FILE)
+
+ATEMP   = 'atemp.png'
+ATEMP   = get_fullpath(ATEMP)
+
+ERROR = 'error.png'
+ERROR = get_fullpath(ERROR)
+
+CLOSE = 'cerrar.png'
+CLOSE = get_fullpath(CLOSE)
+
+ESCRITORIO = 'escritorio.png'
+ESCRITORIO = get_fullpath(ESCRITORIO)
+
+DB_SNR  = 'set_frequency.png'
+DB_SNR  = get_fullpath(DB_SNR)
+
+LAYERS = 'layers.png'
+LAYERS = get_fullpath(LAYERS)
+
+#-------------------------- FTP Credentials ----------------------------------------------#
 SRC_FTP ='lisn.igp.gob.pe'
-USER_FTP = 'cesar'
-PWD_FTP ='cev2001gobpe'
-PATH_FTP = '/data1/ionosonde/JM91J/'
-PATH_EXPLORER = r"C:\Users\Armando\Downloads\SAOExplorer_3.6"
+USER_FTP = 'acastro'
+PWD_FTP ='UhmqBB0yLz4f5vLu1HvC'
+# PATH_FTP = '/data1/ionosonde/JM91J/'
+PATH_FTP = '/JM91J'
+
+#-------------------------- Sao Explorer ----------------------------------------------#
+
+PATH_EXPLORER = r"C:\Users\soporte\Desktop\JRO-SaoExplorerForVipir-main\SAOExplorer_3.6"
 PATH_DESKTOP = os.path.expanduser("~/Desktop")
 PATH_SAO = os.path.join(PATH_DESKTOP,'SAOs')
 SRC_TEMP = os.path.join(PATH_DESKTOP,'atemp')
-TIME_SLEEP_BY_ADJUST = 3.5
+TIME_SLEEP_BY_ADJUST = 9
+
 
 DAYS = [31,28,31,30,31,30,31,31,30,31,30,31]
 
@@ -152,7 +194,7 @@ def ngi2grm(path1,path2=None):
     
     buff =[[x,path2] for x in list]
      
-    pool = Pool(8,maxtasksperchild=1000)
+    pool = Pool(4,maxtasksperchild=500)
     
     result =pool.map(processto,buff)
     
@@ -162,7 +204,36 @@ def ngi2grm(path1,path2=None):
     result = numpy.count_nonzero(~numpy.array(result))
     return result
 
+def WriteStatus(command):
+    file_status = "status.txt"
 
+    with open(file_status,'w') as file:
+        file.write(command)
+
+def WriteError(log):
+    #---------- files --------------
+    file_error = "error.log"
+    
+
+
+    buff = list()
+    with open(file_error,'r') as file:
+
+        buff = file.read().splitlines()
+        
+        buff.append(log)
+
+    with open(file_error,'r') as file:
+
+        file.writelines(line +'\n' for line in buff)
+    
+
+    WriteStatus("ERROR")
+
+    
+
+            
+        
 
 def processto(array):
         file,path2 = array[0],array[1]

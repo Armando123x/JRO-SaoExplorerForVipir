@@ -1,0 +1,8 @@
+# STATUS
+# RUN -> Corriendo sin error
+# FAIL -> ALGUN TIPO DE ERROR 
+# STOP -> PROGRAMA EN 0 
+###STATUS
+#STOP
+###ULTIMA FECHA PROCESADA
+None

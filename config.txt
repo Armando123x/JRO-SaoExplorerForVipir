@@ -1,0 +1,6 @@
+#initial date
+2018/05/01
+#final date
+2020/12/31
+#Tiempo en horas para reiniciar el programa
+100
