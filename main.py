@@ -73,9 +73,7 @@ class saoVipi(object):
     def __config_download(self,):
         
         #/data1/ionosonde/JM91J/2009/08/*
-        WriteStatus("RUN")
-
-
+        
         year0   = int(self.ini_date.year)
         month0  = int(self.ini_date.month)
         day0    = int(self.ini_date.day)
@@ -89,11 +87,9 @@ class saoVipi(object):
         temp = list()
         
         dfyear = year1-year0
-   
+        print("dfyeat",dfyear)
         if dfyear<0:
-            log = "Verifique el rango de fechas ingresadas."
-            WriteError(log)
-            raise ValueError(log)
+            ValueError("Verifique el rango de fechas ingresadas.")
         
         
         elif dfyear==0:
@@ -112,20 +108,13 @@ class saoVipi(object):
                 temp.append(paths);paths=list();
                 
             elif  month0>month1:
-                log = "Verifique el rango de fechas ingresadas."
-                WriteError(log)
-                raise ValueError(log)
+                ValueError("Verifique el rango de fechas ingresadas.")
             else: 
                 for m in range(month0,month1+1):
                     days = DAYS[m-1]
-
                     if m == 2 and es_bisiesto(year0): days=29
-                    d0 = 1
-                    d1 = days
-                    if m==month0: d0=day0
-                    if m==month1: d1=day1
-
-                    for day in range(d0,d1+1):
+                    
+                    for day in range(1,days+1):
                         
                         buff= '{}/{:04d}/{:02d}/{:02d}/ngi'.format(PATH_FTP,year0,m,day)
                         paths.append(buff)
@@ -151,10 +140,8 @@ class saoVipi(object):
             for m in range(month0,13):
                 days = DAYS[m-1]
                 if m == 2 and es_bisiesto(year0): days=29
-                d0=1
-                if m==month0: d0=day0
-
-                for day in range(d0,days+1):
+                
+                for day in range(1,days+1):
                     buff='{}/{:04d}/{:02d}/{:02d}/ngi'.format(PATH_FTP,year0,m,day)
                     paths.append(buff)
                     if SAVE_SAO =='daily':
@@ -175,13 +162,9 @@ class saoVipi(object):
                     
             for m in range(1,month1+1):
                 days = DAYS[m-1]
-                
                 if m == 2 and es_bisiesto(year1): days=29
                 
-                d1 = days
-                if m==month1: d1 = day1
-
-                for day in range(1,d1+1):
+                for day in range(1,days+1):
                     buff='{}/{:04d}/{:02d}/{:02d}/ngi'.format(PATH_FTP,year1,m,day)
                     paths.append(buff)
                     if SAVE_SAO =='daily':
@@ -205,9 +188,8 @@ class saoVipi(object):
             for m in range(month0,13):
                 days = DAYS[m-1]
                 if m == 2 and es_bisiesto(year0): days=29
-                d0=1
-                if m==month0:d0=day0
-                for day in range(d0,days+1):
+                
+                for day in range(1,days+1):
                     buff='{}/{:04d}/{:02d}/{:02d}/ngi'.format(PATH_FTP,year0,m,day)
                     paths.append(buff)
                     if SAVE_SAO =='daily':
@@ -254,13 +236,10 @@ class saoVipi(object):
   
                     
             for m in range(1,month1+1):
-                
                 days = DAYS[m-1]
                 if m == 2 and es_bisiesto(year1): days=29
-                d1 = days
-                if m==month1: d1 = day1
-
-                for day in range(1,d1+1):
+                
+                for day in range(1,days+1):
                     buff = '{}/{:04d}/{:02d}/{:02d}/ngi'.format(PATH_FTP,year1,m,day)
                     paths.append(buff)
                     if SAVE_SAO =='daily':
@@ -379,9 +358,7 @@ class saoVipi(object):
                             if self.verbose:
                                 print("Nos desconectamos del servidor {}.".format(SRC_FTP))
                         except:
-                            log = "Existió problema al desconectarse del servidor FTP."
-                            WriteError(log)
-                            raise RuntimeWarning(log)
+                            RuntimeWarning("Existió problema al desconectarse del servidor FTP.")
 
 
                     else:
@@ -390,10 +367,7 @@ class saoVipi(object):
                             if self.verbose:
                                 print("Nos desconectamos del servidor {}.".format(SRC_FTP))
                         except:
-                            log ="Existió problema al desconectarse del servidor FTP."
-                            WriteError(log)
-
-                            raise RuntimeWarning(log)
+                            RuntimeWarning("Existió problema al desconectarse del servidor FTP.")
 
             
             # Ahora convertimos a .GRM 
@@ -455,27 +429,21 @@ class saoVipi(object):
                                     self.save_database()
 
                             elif len(lista)>0:
-                                log = "Existe diversos archivos SAO en la ruta {}, por lo que es dificil elegir.".format(PATH_DESKTOP)
-                                WriteError(log)
-            
-                                raise RuntimeError(log)
-
+                                raise RuntimeError("Existe diversos archivos SAO en la ruta {}, por lo que es dificil elegir.".format(PATH_DESKTOP))
                             
                             else:
-                                log = "Los archivos SAO no se están guardando en la ruta '{}'".format(PATH_DESKTOP)
-                                WriteError(log)
-                                raise RuntimeError(log)
+                                raise RuntimeError("Los archivos SAO no se están \
+                                    guardando en la ruta '{}'".format(PATH_DESKTOP))
                             
                             # Eliminamos la carpeta temporal.
                             try:
+                                #MODIFICAMOS AQUI
+                                #pass
                                 shutil.rmtree(SRC_TEMP)
                             except:
                                 print("No se pudo borrar la carpeta temporal de VIPIR.")
                         elif attempts ==50:
-
-                            log = "Se alcanzó el máximo de intentos para la ventana de SAOExplorer. Revise programa o vacie memoria."
-                            WriteError(log)
-                            raise RuntimeError(log)
+                            raise RuntimeError("Se alcanzó el máximo de intentos para la ventana de SAOExplorer. Revise programa o vacie memoria.")
                         else:
                             attempts+=1
                             print("Algo salió mal, volviendo a ejecutar SAOExplorer.")
@@ -507,7 +475,7 @@ class saoVipi(object):
         pool = self.__config_SAOExplorer()
 
         #########################################################
-        WriteStatus("RUN")
+
         
         pyautogui.sleep(5)
         def cerrar_ventana():
@@ -553,10 +521,7 @@ class saoVipi(object):
         def search_and_click(button,confidence=.7,clicks = 1):
             FLY = True
             
-            WriteStatus("RUN")
-
-
-
+            
             confidence = confidence
             posicion_boton = None 
             confidence = confidence
@@ -577,16 +542,14 @@ class saoVipi(object):
                 if posicion_boton is not None:
                     break     
                 if count ==3:
-                    log = "No se encontró el botón {}".format(button)
-                    WriteError(log)
-                    raise TimeoutError (log)
+                    raise TimeoutError ("No se encontró el botón {}".format(button))
             if self.verbose:
                 print("Se encontró el botón {} en el intento {}".format(button,count+1))
             self.__click(posicion_boton,number=clicks)
 
 
 
-        search_and_click(BUTON_ALL,confidence=.95)
+        search_and_click(BUTON_ALL,confidence=.99)
         pyautogui.sleep(1.5)
         #########################################################
         # Confirmar si es desktop 
@@ -633,18 +596,29 @@ class saoVipi(object):
         
         def check_if_correct_window():
             confidence=.8
-            posicion_boton  = None
-            while posicion_boton is None:
-                posicion_boton = pyautogui.locateOnScreen(LAYERS, confidence=confidence)
+            posicion_boton1  = None
+            while posicion_boton1 is None:
+                posicion_boton1 = pyautogui.locateOnScreen(LAYERS, confidence=confidence)
                 confidence-=.07
-                if confidence < 0.5: return None 
+                if confidence < 0.5: posicion_boton1= None 
             
-            return posicion_boton  
+            confidence=.95
+
+            posicion_boton2  = None
+            while posicion_boton2 is None:
+                posicion_boton2 = pyautogui.locateOnScreen(FREQ, confidence=confidence)
+                confidence-=.07
+                if confidence < 0.5: 
+                    posicion_boton2 = None
+
+
+            return posicion_boton1, posicion_boton2
             
 
         
         flag_set = False
         bt = None 
+        freq = None
 
         pyautogui.sleep(0.5)
         if self.verbose:
@@ -654,18 +628,17 @@ class saoVipi(object):
             
             # Ajustamos la curva
             if flag_set is False:
-                bt = check_if_correct_window()
+                bt,freq = check_if_correct_window()
                 flag_set = True
-                if bt is None:
-                    log = "Error en la ejecución del programa SAOExplorer."
-                    WriteError(log)
-                    raise  RuntimeError(log)
+                if bt is None or freq is None:
+                    raise  RuntimeError("Error en la ejecución del programa SAOExplorer.")
                 
 
             pyautogui.typewrite('\n') 
             pyautogui.typewrite('\n') 
             pyautogui.sleep(0.2)
-            self.__click(bt,1)
+            self.__click(freq,1)
+            pyautogui.sleep(0.1)
             pyautogui.typewrite('\n')  
             pyautogui.typewrite('\n')  
             pyautogui.typewrite('w')
@@ -678,16 +651,18 @@ class saoVipi(object):
             pyautogui.typewrite('\n')  
             pyautogui.typewrite('\n')  
             pyautogui.sleep(0.2) 
-            self.__click(bt,1)
+            self.__click(freq,1)
 
             pyautogui.typewrite('\n')  
             pyautogui.typewrite('\n')  
+            pyautogui.sleep(0.2)
             pyautogui.typewrite('x')
             pyautogui.sleep(1.3)
             
             
 
-        pyautogui.sleep(10)
+        pyautogui.sleep(14)
+        pyautogui.typewrite('\n')
         pyautogui.typewrite('\n')
         pyautogui.typewrite('\n')
         #########################################        
@@ -735,6 +710,8 @@ class saoVipi(object):
             print("Se cierra el programa SaoExplorer.....")
 
         # Llamar a la función para cerrar la ventana
+        pyautogui.typewrite('\n')
+        pyautogui.typewrite('\n')
         value = cerrar_ventana()
         pyautogui.typewrite('\n')
         pyautogui.typewrite('\n')
@@ -771,9 +748,8 @@ class saoVipi(object):
             self.FlagInitConfig =True
             
             if self.ini_date is None:
-                log = "Verifique el valor proporcionado a la fecha inicial de obtención de datos."
-                WriteError(log)
-                raise ValueError(log)
+                 
+                raise ValueError("Verifique el valor proporcionado a la fecha inicial de obtención de datos.")
                     
             if self.fin_date is None:
                 
@@ -932,11 +908,11 @@ class saoVipi(object):
         # self.thread.close()
         # self.thread.join()
         
- 
+#FALTA 30 Y 31 DE ENERO 
      
 if __name__ =='__main__':
-    ini_date="2018/05/01"
-    fin_date="2020/12/31"
+    ini_date="2023/08/08"
+    fin_date="2023/12/31"
     obj = saoVipi(ini_date=ini_date,
                   fin_date=fin_date,
                   verbose=True)
