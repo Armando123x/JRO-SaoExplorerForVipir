@@ -46,7 +46,7 @@ def exec_command(command=None):
 class saoVipi(object):
     
     FlagInitConfig= False
-    
+    count_grm = 0
     
     def __init__(self,**kwargs):
         
@@ -56,6 +56,7 @@ class saoVipi(object):
         self.verbose = kwargs.get("verbose",False)
         self.ini_date = kwargs.get('ini_date',None)
         self.fin_date = kwargs.get('fin_date',None)
+        self.save_grm = kwargs.get("save_grm",False)
         
         self.path_explorer = kwargs.get("path_explorer",PATH_EXPLORER)
         
@@ -439,6 +440,23 @@ class saoVipi(object):
                             try:
                                 #MODIFICAMOS AQUI
                                 #pass
+                                if self.save_grm:
+                                    listdir = os.listdir(SRC_TEMP)
+                                    
+                                    path_save = os.path.join(SAVE_GRM,str(self.count_grm).zfill(4))
+
+
+                                    if not os.path.isdir(path_save):
+                                        os.makedirs(path_save)
+                                    for file in listdir:
+
+                                        pinit_ = os.path.join(SRC_TEMP,file)
+                                        pout_  = os.path.join(path_save,file)
+
+                                        shutil.move(pinit_,pout_)
+                                    
+                                    self.count_grm +=1
+
                                 shutil.rmtree(SRC_TEMP)
                             except:
                                 print("No se pudo borrar la carpeta temporal de VIPIR.")
@@ -534,7 +552,7 @@ class saoVipi(object):
                 while posicion_boton is None:
                     pyautogui.sleep(0.5)
                     posicion_boton = pyautogui.locateOnScreen(button, confidence=confidence)
-                    confidence -= 0.05
+                    confidence -= 0.02
                     if confidence < MIN_CONFIDENCE: 
                         pyautogui.sleep(1.5)
                         count+=1; break; 
@@ -549,7 +567,7 @@ class saoVipi(object):
 
 
 
-        search_and_click(BUTON_ALL,confidence=.99)
+        search_and_click(BUTON_ALL,confidence=.999)
         pyautogui.sleep(1.5)
         #########################################################
         # Confirmar si es desktop 
@@ -908,14 +926,8 @@ class saoVipi(object):
         # self.thread.close()
         # self.thread.join()
         
-#FALTA 30 Y 31 DE ENERO 
-     
-if __name__ =='__main__':
-    ini_date="2023/08/08"
-    fin_date="2023/12/31"
-    obj = saoVipi(ini_date=ini_date,
-                  fin_date=fin_date,
-                  verbose=True)
+ 
+
     
  
  

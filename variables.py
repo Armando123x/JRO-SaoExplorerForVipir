@@ -41,10 +41,11 @@ USER_FTP = 'acastro'
 PWD_FTP ='UhmqBB0yLz4f5vLu1HvC'
 # PATH_FTP = '/data1/ionosonde/JM91J/'
 PATH_FTP = '/ionosonde/JM91J/'
-PATH_EXPLORER = r"C:\Users\soporte\Desktop\JRO-SaoExplorerForVipir-main\SAOExplorer_3.6"
+PATH_EXPLORER = r".\SAOExplorer_3.6"
 PATH_DESKTOP = os.path.expanduser("~/Desktop")
 PATH_SAO = os.path.join(PATH_DESKTOP,'SAOs')
 SRC_TEMP = os.path.join(PATH_DESKTOP,'atemp')
+SAVE_GRM = os.path.join(PATH_DESKTOP,'GRMs')
 TIME_SLEEP_BY_ADJUST = 8
 
 DAYS = [31,28,31,30,31,30,31,31,30,31,30,31]
