@@ -835,7 +835,7 @@ class saoVipi(object):
          
     def __ftp_connection(self):
         attempts = 0
-        time_per_connection = 30
+        time_per_connection = 60
         
         
         while 1:
@@ -846,9 +846,9 @@ class saoVipi(object):
             
             except:
                 
-                print("Hay problemas con la conexión FTP. Volviendo a conectar dentro de {} segundos. Intento {}/3".format(time_per_connection,attempts+1))
+                print("Hay problemas con la conexión FTP. Volviendo a conectar dentro de {} segundos. Intento {}/15".format(time_per_connection,attempts+1))
                 time.sleep(time_per_connection)
-                if attempts == 3:
+                if attempts == 15:
                     raise ValueError("Revisar la conexión al FTP. Posible falla: Conexión a Internet \
                             o credenciales FTP.")
             
