@@ -35,6 +35,13 @@ ESCRITORIO = 'escritorio.png'
 DB_SNR  = 'set_frequency.png'
 LAYERS = 'layers.png'
 FREQ = 'freq.png'
+#-----------------------------------------#
+
+UP_LEVEL = 'up_level.png'
+SAVE_AS = 'save_as.png'
+VIEW_MENU = 'view.png'
+PROFILOGRAM = 'profilogram.png'
+TEXT = 'text.png'
 
 SRC_FTP ='lisn.igp.gob.pe'
 USER_FTP = 'acastro'
@@ -43,7 +50,7 @@ PWD_FTP ='UhmqBB0yLz4f5vLu1HvC'
 PATH_FTP = '/ionosonde/JM91J/'
 PATH_EXPLORER = r".\SAOExplorer_3.6"
 PATH_DESKTOP = os.path.expanduser("~/Desktop")
-PATH_SAO = os.path.join(PATH_DESKTOP,'SAOs')
+PATH_SAO = os.path.join(PATH_DESKTOP,'SAOs') 
 SRC_TEMP = os.path.join(PATH_DESKTOP,'atemp')
 SAVE_GRM = os.path.join(PATH_DESKTOP,'GRMs')
 TIME_SLEEP_BY_ADJUST = 8

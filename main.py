@@ -399,13 +399,38 @@ class saoVipi(object):
                         if self.__release_SAOExplorer(count):
                             flag = False
                             src_sao = os.path.join(PATH_DESKTOP,'*.SAO')
+
+                            if not os.path.isdir(PATH_SAO):
+                                os.mkdir(PATH_SAO)
+
+                            if self.real_time_climaweb:
+
+                                src_web = os.path.join(PATH_DESKTOP,'*.txt')
+
+                                lista_txt = glob.glob(src_web)
+
+                                if len(lista_txt) == 1:
+                                    for file in lista:
+                                        file = os.path.basename(file)
+                                        # Construir la ruta de destino
+                                        ruta_file = os.path.join(PATH_DESKTOP, file)
+                                        ruta_destino = os.path.join(PATH_SAO, file)
+
+                                        #Mover el archivo a la carpeta de destino
+                                        shutil.copy(os.path.join(PATH_DESKTOP, file),
+                                                    os.path.join(PATH_SAO, file))
+                                    
+                                        os.remove(ruta_file)
+
+                                        if self.verbose:
+                                            print(f"Se salvó el archivo .txt {file}")
+
+                                        self.__process_file(path=os.path.join(PATH_SAO, file))
+
                             lista = glob.glob(src_sao)
                             
                             if len(lista)==1:
-                                
-                                if not os.path.isdir(PATH_SAO):
-                                    os.mkdir(PATH_SAO)
-                                    
+                                                                   
                                 for file in lista:
                                     file = os.path.basename(file)
                                     # Construir la ruta de destino
@@ -475,7 +500,13 @@ class saoVipi(object):
                     print("No se descargó algún archivo. Se seguirá explorando otros directorios. ")
                      
 
-                       
+    def __process_file(self,path):
+
+        '''
+        Logica de lectura del archivo .txt
+        '''                 
+
+        
            
     def __click(self,posicion_boton,number= 1):
         
@@ -723,6 +754,42 @@ class saoVipi(object):
         pyautogui.typewrite('\n')
         #Esperamos 10 segundos para el guardado
         pyautogui.sleep(10)
+        pyautogui.typewrite('\n')
+        pyautogui.typewrite('\n')
+
+        if self.real_time_climaweb:
+
+            '''
+            Se piensa plotear los valores de Ne o frequency 
+            '''
+
+            search_and_click(VIEW_MENU,confidence=.9)
+            pyautogui.sleep(0.5)
+            search_and_click(PROFILOGRAM,confidence=0.9)
+            pyautogui.sleep(45)#Esperamos 45 segundos para la generación de las graficas
+            search_and_click(TEXT,confidence=0.95)
+
+            pyautogui.sleep(0.5)
+            search_and_click(SAVE_AS,confidence=0.95)
+
+            pyautogui.sleep(0.3)
+            search_and_click(UP_LEVEL,confidence=0.9,clicks=3)
+            pyautogui.typewrite('\n')
+            pyautogui.sleep(0.3)
+            pyautogui.typewrite('\n')
+
+            value = cerrar_ventana()
+
+            if value and self.verbose:
+
+                print("Se cierra la ventana Profilegram")
+            pyautogui.sleep(0.3)
+            
+
+
+
+
+
         #Cerramos el programa
         if self.verbose:
             print("Se cierra el programa SaoExplorer.....")
@@ -733,6 +800,11 @@ class saoVipi(object):
         value = cerrar_ventana()
         pyautogui.typewrite('\n')
         pyautogui.typewrite('\n')
+
+
+
+
+
 
 
         if value and self.verbose:
