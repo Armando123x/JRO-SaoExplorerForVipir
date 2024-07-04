@@ -1,5 +1,7 @@
 from main import * 
+from variables import * 
 
+from others import *
 
 if __name__ =='__main__':
     save_grm = False
@@ -8,4 +10,5 @@ if __name__ =='__main__':
     obj = saoVipi(ini_date=ini_date,
                   fin_date=fin_date,
                   save_grm = save_grm,
-                  verbose=True)
+                  verbose=True,
+                  realtime_web = True)

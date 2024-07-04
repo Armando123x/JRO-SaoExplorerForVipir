@@ -7,7 +7,7 @@ import ftplib, tarfile, os
 from ftplib import FTP
 import pandas as pd 
 from multiprocessing import Pool
-from datetime import datetime
+from datetime import datetime,timezone
 import numpy
 from pywinauto import Desktop, Application
 import pygetwindow as gw
@@ -83,9 +83,12 @@ class saoVipi(object):
 
         if self.real_time_climaweb:
 
-            self.ini_date = datetime.now().astimezone(datetime.timezone.utc) + relativedelta(days=-7)
+            self.ini_date = datetime.now().astimezone(timezone.utc) + relativedelta(days=-7)
+
+            self.ini_date = datetime(self.ini_date.year,self.ini_date.month,self.ini_date.day)
 
             self.fin_date = datetime.now()
+            self.fin_date = datetime(self.fin_date.year,self.fin_date.month,self.fin_date.day)
 
 
         
@@ -108,7 +111,7 @@ class saoVipi(object):
             ValueError("Verifique el rango de fechas ingresadas.")
         
         
-        elif dfyear==0:
+        else:
             r = 0
             while 1:
 
@@ -122,8 +125,8 @@ class saoVipi(object):
 
                 paths = list()
 
-
-                if tmp_date== self.fin_date:
+                r = r+1
+                if tmp_date> self.fin_date:
 
                     break 
  
@@ -397,7 +400,7 @@ class saoVipi(object):
                     
                     if len(files)>0:
                          
-                        files = numpy.array(files)
+                        files = numpy.array(files)[:7]
                         
                         for file in files:
                             
@@ -495,6 +498,8 @@ class saoVipi(object):
 
                     #-------------------------------------------------------#
                     while flag:
+
+                        count = 5
                         if self.__release_SAOExplorer(count):
                             flag = False
 
@@ -800,23 +805,23 @@ class saoVipi(object):
                 
 
         def search_and_click(button,confidence=.7,clicks = 1):
-            FLY = True
+ 
             
-            
-            confidence = confidence
             posicion_boton = None 
-            confidence = confidence
+       
             count = 0
 
             while 1:
                 if self.verbose:
                     print("Buscando el boton {}. Intento: {}".format(button,count+1))
-  
+                
+                confidence_ = confidence
+
                 while posicion_boton is None:
                     pyautogui.sleep(0.5)
-                    posicion_boton = pyautogui.locateOnScreen(button, confidence=confidence)
-                    confidence -= 0.02
-                    if confidence < MIN_CONFIDENCE: 
+                    posicion_boton = pyautogui.locateOnScreen(button, confidence=confidence_)
+                    confidence_ -= 0.02
+                    if confidence_ < MIN_CONFIDENCE: 
                         pyautogui.sleep(1.5)
                         count+=1; break; 
 
@@ -995,9 +1000,9 @@ class saoVipi(object):
             Se piensa plotear los valores de Ne o frequency 
             '''
 
-            search_and_click(VIEW_MENU,confidence=.9)
+            search_and_click(VIEW_MENU,confidence=.95)
             pyautogui.sleep(0.5)
-            search_and_click(PROFILOGRAM,confidence=0.9)
+            search_and_click(PROFILOGRAM,confidence=0.95)
             pyautogui.sleep(1)#Esperamos 60 segundos para la generación de las graficas
 
 
