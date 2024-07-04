@@ -18,6 +18,7 @@ import win32api
 import win32gui
 import win32con
 import win32process as wproc
+from dateutil.relativedelta import relativedelta
 
 import distutils.file_util
 
@@ -53,6 +54,9 @@ class saoVipi(object):
         ##obtener_sao_explorer
         #sistema
          
+
+        self.fig=plt.figure(figsize=(25,9),dpi=100)
+
         self.verbose = kwargs.get("verbose",False)
         self.ini_date = kwargs.get('ini_date',None)
         self.fin_date = kwargs.get('fin_date',None)
@@ -63,6 +67,8 @@ class saoVipi(object):
         
         self.ini_date = datetime.strptime(self.ini_date, "%Y/%m/%d")
         self.fin_date = datetime.strptime(self.fin_date, "%Y/%m/%d")
+
+        self.real_time_climaweb = kwargs.get("realtime_web",False)
         
         self.__init_config()
         
@@ -74,6 +80,14 @@ class saoVipi(object):
     def __config_download(self,):
         
         #/data1/ionosonde/JM91J/2009/08/*
+
+        if self.real_time_climaweb:
+
+            self.ini_date = datetime.now().astimezone(datetime.timezone.utc) + relativedelta(days=-7)
+
+            self.fin_date = datetime.now()
+
+
         
         year0   = int(self.ini_date.year)
         month0  = int(self.ini_date.month)
@@ -87,178 +101,32 @@ class saoVipi(object):
         
         temp = list()
         
-        dfyear = year1-year0
-        print("dfyeat",dfyear)
+        dfyear = year1-year0 
+
+
         if dfyear<0:
             ValueError("Verifique el rango de fechas ingresadas.")
         
         
         elif dfyear==0:
-            if month0==month1:
-                days = DAYS[month0-1]
-                if month0 == 2 and es_bisiesto(year0): days=29
-                for day in range(day0,day1+1):
-                    buff='{}/{:04d}/{:02d}/{:02d}/ngi'.format(PATH_FTP,year0,month0,day)
-                    paths.append(buff)
-                    
-                    if SAVE_SAO =='daily':temp.append(paths);paths=list();
-                    
-                    if self.verbose:
-                        print("Agregando la direccion {} a la sección de descarga.".format(buff))
-                        
-                temp.append(paths);paths=list();
-                
-            elif  month0>month1:
-                ValueError("Verifique el rango de fechas ingresadas.")
-            else: 
-                for m in range(month0,month1+1):
-                    days = DAYS[m-1]
-                    if m == 2 and es_bisiesto(year0): days=29
-                    
-                    for day in range(1,days+1):
-                        
-                        buff= '{}/{:04d}/{:02d}/{:02d}/ngi'.format(PATH_FTP,year0,m,day)
-                        paths.append(buff)
-                        
-                        if SAVE_SAO =='daily':
-                            temp.append(paths)
-                            paths=list()
-                        
-                        if self.verbose:
-                            print("Agregando la direccion {} a la sección de descarga.".format(buff))
-                        
-                    if SAVE_SAO =='monthly':
-                        temp.append(paths)
-                        paths   =list()
-                    
-                if SAVE_SAO =='annually':
-                    temp.append(paths)
-                    paths=list()
-                    
-        
-        elif dfyear==1:
-             
-            for m in range(month0,13):
-                days = DAYS[m-1]
-                if m == 2 and es_bisiesto(year0): days=29
-                
-                for day in range(1,days+1):
-                    buff='{}/{:04d}/{:02d}/{:02d}/ngi'.format(PATH_FTP,year0,m,day)
-                    paths.append(buff)
-                    if SAVE_SAO =='daily':
-                        temp.append(paths)
-                        paths=list()
-                    
-                    if self.verbose:
-                        print("Agregando la direccion {} a la sección de descarga.".format(buff))
-                        
-                
-                if SAVE_SAO =='monthly':
-                    temp.append(paths)
-                    paths=list()
-                    
-            if SAVE_SAO =='annually':
+            r = 0
+            while 1:
+
+                tmp_date = self.ini_date + relativedelta(days=+r)
+
+                buff='{}/{:04d}/{:02d}/{:02d}/ngi'.format(PATH_FTP,tmp_date.year,tmp_date.month,tmp_date.day)
+
+                paths.append(buff)
+
                 temp.append(paths)
-                paths=list()
-                    
-            for m in range(1,month1+1):
-                days = DAYS[m-1]
-                if m == 2 and es_bisiesto(year1): days=29
-                
-                for day in range(1,days+1):
-                    buff='{}/{:04d}/{:02d}/{:02d}/ngi'.format(PATH_FTP,year1,m,day)
-                    paths.append(buff)
-                    if SAVE_SAO =='daily':
-                        temp.append(paths)
-                        paths=list()
-                        
-                    
-                    if self.verbose:
-                        print("Agregando la direccion {} a la sección de descarga.".format(buff))
-                        
-                if SAVE_SAO =='monthly':
-                    temp.append(paths)
-                    paths=list()
-                
-            if SAVE_SAO =='annually':
-                temp.append(paths)
-                paths=list()
-                
-        else:
-          
-            for m in range(month0,13):
-                days = DAYS[m-1]
-                if m == 2 and es_bisiesto(year0): days=29
-                
-                for day in range(1,days+1):
-                    buff='{}/{:04d}/{:02d}/{:02d}/ngi'.format(PATH_FTP,year0,m,day)
-                    paths.append(buff)
-                    if SAVE_SAO =='daily':
-                        temp.append(paths)
-                        paths=list()
-                        
-                    
-                    if self.verbose:
-                        print("Agregando la direccion {} a la sección de descarga.".format(buff))
-            
-                if SAVE_SAO =='monthly':
-                    temp.append(paths)
-                    paths=list()
-            
-            if SAVE_SAO =='annually':
-                temp.append(paths)
-                paths=list();
-            
-     
-                
-            for year in range(year0+1,year1):
-                for m in range(1,13):
-                    days = DAYS[m-1]
-                    if m == 2 and es_bisiesto(year): days=29
-                
-                    for day in range(1,days+1):
-                        buff ='{}/{:04d}/{:02d}/{:02d}/ngi'.format(PATH_FTP,year,m,day)
-                        paths.append(buff)
-                        if SAVE_SAO =='daily':
-                            temp.append(paths)
-                            paths=list()
-                        
-                        if self.verbose:
-                            print("Agregando la direccion {} a la sección de descarga.".format(buff))
-                    
-                    if SAVE_SAO =='monthly':
-                        temp.append(paths)
-                        paths=list()
-                
-                if SAVE_SAO =='annually':
-                    temp.append(paths)
-                    paths=list()
-                    
-  
-                    
-            for m in range(1,month1+1):
-                days = DAYS[m-1]
-                if m == 2 and es_bisiesto(year1): days=29
-                
-                for day in range(1,days+1):
-                    buff = '{}/{:04d}/{:02d}/{:02d}/ngi'.format(PATH_FTP,year1,m,day)
-                    paths.append(buff)
-                    if SAVE_SAO =='daily':
-                        temp.append(paths)
-                        paths=list()
-                    
-                    if self.verbose:
-                        print("Agregando la direccion {} a la sección de descarga.".format(buff))
-                    
-                
-                if SAVE_SAO =='monthly':
-                    temp.append(paths)
-                    paths=list()
-            
-            if SAVE_SAO =='annually':
-                temp.append(paths)
-                paths=list()
-                
+
+                paths = list()
+
+
+                if tmp_date== self.fin_date:
+
+                    break 
+ 
         
         # temp = numpy.array(temp,dtype='object')
             
@@ -277,7 +145,209 @@ class saoVipi(object):
         
         file = os.path.join(".temp","db.pkl")
         self.database.to_pickle(file)            
+    
+    def __gen_images(self,):
+
+        now_local = datetime.now()
+
+        # Convertir la fecha y hora local a UTC
+        now_utc = now_local.astimezone(datetime.timezone.utc)
+
+        if not os.path.isdir(PATH_FIG):
+
+            os.makedirs(PATH_FIG)
+
+        
+        #-------------------  Leemos los archivos de 7 dias --------------------#
+
+        for i in range(7):
+
+            date = now_utc + relativedelta(days=-1*i)
+
+            year = date.year
+            month = date.month
+            day = date.day
+            doy = date.timetuple().tm_yday
+ 
+            name_file = f"JI91J_{year:04d}{month:02d}{day:02d}({doy}).txt"
+
+            fpath = os.path.join(PATH_SAO,name_file)
+
+            data = dict()
+
+
+            if os.path.exists(fpath):
+
+                tmp_dict = self.__extract_data(fpath)
+
+                self.__plot_day(tmp_dict,name_file)
+
+                data = {**data,**tmp_dict}
+
+            self.__plot_latest(data,)
+
+    def __plot_latest(self,data):
+        
+        num_heights = 150 
+        #----defin parameters -----#
+
+        max_ngi = 288*7 +2 
+
+        min_ngi = 288
+
+        keys_date = sorted(data.keys())
+
+        size_date = len(keys_date)
+
+        if(size_date>=min_ngi) and (size_date<= max_ngi):
+
+            valid_date = keys_date[-288:]
+
+        else:
+            valid_date = keys_date[:]
+
+        
+        heights_list = [data[x]['height'] for x in valid_date]
+        values_list  = [data[x]['data'] for x in valid_date]
+        times_numeric = numpy.array([x.timestamp() for x in valid_date])
+
+
+        time_uniform = times_numeric
+        height_uniform = numpy.linspace(0, max(max(heights) for heights in heights_list), num_heights)
+        time_grid, height_grid = numpy.meshgrid(time_uniform, height_uniform)
+        time_points = numpy.concatenate([numpy.full_like(heights, time) for heights, time in zip(heights_list, times_numeric)])
+        height_points = numpy.concatenate(heights_list)
+        values_points = numpy.concatenate(values_list)
+
+        #print(min(height_uniform),max(height_uniform),height_uniform.shape)
+        # Interpolación
+        values_grid = griddata((time_points, height_points), values_points, (time_grid, height_grid), method='cubic')
+
+        ax = self.fig.add_subplot(1,1,1)
+            
+        time_uniform_datetime = pd.to_datetime(time_uniform, unit='s')
+        values_grid[numpy.isnan(values_grid)] = 0
+        c = ax.pcolormesh(time_uniform_datetime, height_uniform, values_grid[:,:], shading='auto',vmin=0,vmax=15)
+        self.fig.colorbar(c, ax=ax)
+
+        self.fig.savefig(PATH_FIG,"latest.png")
+        self.fig.clf()
+
+
+
+
+
+    def __plot_day(self,data,name_file):
+        
+        num_heights = 150
+        standard_height = numpy.linspace(0,999,1000)
+
+
+        dates = sorted(data.keys())
+
+        times_numeric = numpy.array([x.timestamp() for x in dates])
+
+        heights_list =[data[x]['height'] for x in dates ] 
+        values_list = ([data[x]['data'] for x in dates ])
+
+
+
+        time_uniform = times_numeric
+        height_uniform = numpy.linspace(0, max(max(heights) for heights in heights_list), num_heights)
+        time_grid, height_grid = numpy.meshgrid(time_uniform, height_uniform)
+        time_points = numpy.concatenate([numpy.full_like(heights, time) for heights, time in zip(heights_list, times_numeric)])
+        height_points = numpy.concatenate(heights_list)
+        values_points = numpy.concatenate(values_list)
+
+        #print(min(height_uniform),max(height_uniform),height_uniform.shape)
+        # Interpolación
+        values_grid = griddata((time_points, height_points), values_points, (time_grid, height_grid), method='cubic')
+
+ 
+
+
+
+        ax = self.fig.add_subplot(1,1,1)
+            
+        time_uniform_datetime = pd.to_datetime(time_uniform, unit='s')
+        values_grid[numpy.isnan(values_grid)] = 0
+        c = ax.pcolormesh(time_uniform_datetime, height_uniform, values_grid[:,:], shading='auto',vmin=0,vmax=15)
+        
+        self.fig.colorbar(c, ax=ax)
+
+        self.fig.savefig(os.path.join(PATH_FIG,name_file.split(".")[0]))
+
+        self.fig.clf()
+
+
+    def __extract_data(self,path):
+    
+        data_dict = dict()
+
+        flag_height = False
+
+        if os.path.exists(path):
+
+            with open(path,'r') as file:
+
+                data = numpy.array(file.read().splitlines(),dtype=object)
+
+
+            indx = 0
+
+            items = len(data)//4
+            for n in range(items):
+
+                datetime_ = data[indx]
+                heights_ = data[indx+1]
+                values_  = data[indx+2]
+
+                if '(' in datetime_ and ')' in datetime_:
+                    pattern =(r'(\d{4}\.\d{2}\.\d{2}) \((\d+)\) (\d{2}:\d{2}:\d{2})')
+
+                    matches = re.findall(pattern,datetime_)
+
+                    match = matches[0]
+
+                    date_ = match[0].split('.')
+                    hour  = match[2].split(':')
+
+                    date = datetime(int(date_[0]),
+                                    int(date_[1]),
+                                    int(date_[2]),
+                                    int(hour[0]),
+                                    int(hour[1]),
+                                    int(hour[2]))
+
+                #-----------Extramos datos de altura ----------#
+
+                patron = '-?\d+\.?\d*'
+    #  NO FULL PROFILE DATA 
+    #  NO FULL PROFILE DATA 
+
+                if heights_ == 'NO FULL PROFILE DATA':
+                    pass
+                else:
+
+                    values = re.findall(patron,heights_)
+
+                    heights = numpy.array([float(value) for value in  values ],dtype=float)
+
+                    patron = '-?\d+\.?\d*'
+
+                    values = re.findall(patron,values_)
+
+                    data_value = numpy.array([float(value) for value in  values ],dtype=float)
+
+
+
+                    data_dict[date] = {'height':heights,'data':data_value}
+
+                indx +=4
+
+        return data_dict
                 
+
         
     def __verify_and_download(self, paths):
         
@@ -286,7 +356,8 @@ class saoVipi(object):
         # /path/to/file/year/month/day/
         
         
-        filestodownload = numpy.array(self.database['name_ngi'],dtype='object')
+        #filestodownload = numpy.array(self.database['name_ngi'],dtype='object')
+        filestodownload = []
         
         files_saved = list()
         
@@ -395,10 +466,37 @@ class saoVipi(object):
 
                     attempts = 0 
                     flag = True
+
+                    #---------------------- Observamos archivos residuales ----------------#
+
+                    src_web = os.path.join(PATH_DESKTOP,'*.txt')
+
+                    lista_txt = glob.glob(src_web)
+
+                    if len(lista_txt) >0:
+                        for file in lista_txt:
+
+                            try:
+                                os.remove(os.path.join(PATH_DESKTOP,file))
+                            except:
+                                pass
+
+                    src_web = os.path.join(PATH_DESKTOP,'*.SAO')
+
+                    lista_txt = glob.glob(src_web)
+
+                    if len(lista_txt) >0:
+                        for file in lista_txt:
+
+                            try:
+                                os.remove(os.path.join(PATH_DESKTOP,file))
+                            except:
+                                pass  
+
+                    #-------------------------------------------------------#
                     while flag:
                         if self.__release_SAOExplorer(count):
                             flag = False
-                            src_sao = os.path.join(PATH_DESKTOP,'*.SAO')
 
                             if not os.path.isdir(PATH_SAO):
                                 os.mkdir(PATH_SAO)
@@ -410,7 +508,7 @@ class saoVipi(object):
                                 lista_txt = glob.glob(src_web)
 
                                 if len(lista_txt) == 1:
-                                    for file in lista:
+                                    for file in lista_txt:
                                         file = os.path.basename(file)
                                         # Construir la ruta de destino
                                         ruta_file = os.path.join(PATH_DESKTOP, file)
@@ -425,7 +523,10 @@ class saoVipi(object):
                                         if self.verbose:
                                             print(f"Se salvó el archivo .txt {file}")
 
-                                        self.__process_file(path=os.path.join(PATH_SAO, file))
+
+                                        #self.__gen_images()
+                                        self.__format_data(ruta_destino)
+                            src_sao = os.path.join(PATH_DESKTOP,'*.SAO')
 
                             lista = glob.glob(src_sao)
                             
@@ -507,7 +608,123 @@ class saoVipi(object):
         '''                 
 
         
-           
+
+        data_dict = dict()
+
+        flag_height = False
+
+        if os.path.exists(path):
+
+            with open(path,'r') as file:
+
+                data = numpy.array(file.read().splitlines(),dtype=object)
+
+
+            indx = 0
+
+            items = len(data)//4
+            for n in range(items):
+
+                datetime_ = data[indx]
+                heights_ = data[indx+1]
+                values_  = data[indx+2]
+
+                if '(' in datetime_ and ')' in datetime_:
+                    pattern =(r'(\d{4}\.\d{2}\.\d{2}) \((\d+)\) (\d{2}:\d{2}:\d{2})')
+
+                    matches = re.findall(pattern,datetime_)
+
+                    match = matches[0]
+
+                    date_ = match[0].split('.')
+                    hour  = match[2].split(':')
+
+                    date = datetime(int(date_[0]),
+                                    int(date_[1]),
+                                    int(date_[2]),
+                                    int(hour[0]),
+                                    int(hour[1]),
+                                    int(hour[2]))
+
+                #-----------Extramos datos de altura ----------#
+
+                patron = '-?\d+\.?\d*'
+                #  NO FULL PROFILE DATA 
+                #  NO FULL PROFILE DATA 
+
+                if heights_ == 'NO FULL PROFILE DATA':
+                    pass
+                else:
+
+                    values = re.findall(patron,heights_)
+
+                    heights = numpy.array([float(value) for value in  values ],dtype=float)
+
+                    patron = '-?\d+\.?\d*'
+
+                    values = re.findall(patron,values_)
+
+                    data_value = numpy.array([float(value) for value in  values ],dtype=float)
+
+
+
+                    data_dict[date] = {'height':heights,'data':data_value}
+
+                indx +=4
+
+        return data_dict
+    def __format_data(self,path):
+
+        data = self.__process_file(path)
+        standard_height = numpy.linspace(0,999,1000)
+
+        dates = sorted(data.keys())
+
+        times_numeric = numpy.array([x.timestamp() for x in dates])
+
+        heights_list =[data[x]['height'] for x in dates ] 
+        values_list = ([data[x]['data'] for x in dates ])
+
+        time_uniform = times_numeric
+        height_uniform = numpy.arange(101)*10
+        time_grid, height_grid = numpy.meshgrid(time_uniform, height_uniform)
+        time_points = numpy.concatenate([numpy.full_like(heights, time) for heights, time in zip(heights_list, times_numeric)])
+        height_points = numpy.concatenate(heights_list)
+        values_points = numpy.concatenate(values_list)
+
+        #print(min(height_uniform),max(height_uniform),height_uniform.shape)
+        # Interpolación
+        values_grid = griddata((time_points, height_points), values_points, (time_grid, height_grid), method='cubic')
+
+        mask = numpy.isnan(values_grid)
+
+        values_grid[mask] = 0
+
+        lines_append = list()
+
+        lines_append.append("datetime,height,frequency")
+
+        for n,date_ in zip(range(values_grid.shape[1]),pd.to_datetime(time_uniform, unit='s')):
+            
+            
+            for h,f in zip(height_uniform,values_grid[:,n]):
+            
+                line = f"{date_.strftime('%Y-%m-%d %H:%M:%S')},{h},{f}"
+                lines_append.append(line)
+
+
+        fileout = os.path.join(PATH_SERVER,os.path.basename(path))
+        
+        if not os.path.isdir(PATH_SERVER):
+            os.makedirs(PATH_SERVER)
+
+
+        with open(fileout,'w') as file:
+
+            file.writelines(line+'\n' for line in lines_append)
+
+            print("Archivo txt guardado.")
+
     def __click(self,posicion_boton,number= 1):
         
             x, y = pyautogui.center(posicion_boton)
@@ -527,6 +744,21 @@ class saoVipi(object):
 
         
         pyautogui.sleep(5)
+
+        def obtener_titulos_ventanas():
+
+            windows = gw.getAllTitles()
+
+            return [w for w in windows if w ]
+        def traer_ventana(title):
+
+            app = Application().connect(title=title)
+
+            window = app[title]
+            window.set_focus()
+
+            return 
+
         def cerrar_ventana():
             FLY = True
             # Obtener el identificador de la ventana activa
@@ -766,27 +998,61 @@ class saoVipi(object):
             search_and_click(VIEW_MENU,confidence=.9)
             pyautogui.sleep(0.5)
             search_and_click(PROFILOGRAM,confidence=0.9)
-            pyautogui.sleep(45)#Esperamos 45 segundos para la generación de las graficas
-            search_and_click(TEXT,confidence=0.95)
+            pyautogui.sleep(1)#Esperamos 60 segundos para la generación de las graficas
 
-            pyautogui.sleep(0.5)
-            search_and_click(SAVE_AS,confidence=0.95)
 
-            pyautogui.sleep(0.3)
-            search_and_click(UP_LEVEL,confidence=0.9,clicks=3)
-            pyautogui.typewrite('\n')
-            pyautogui.sleep(0.3)
-            pyautogui.typewrite('\n')
+            ventanas_iniciales = set(obtener_titulos_ventanas())
 
-            value = cerrar_ventana()
+            init = datetime.now().timestamp()
 
-            if value and self.verbose:
+            flag_profilegram = False
+            while 1:
+                
+                time.sleep(10)
 
-                print("Se cierra la ventana Profilegram")
-            pyautogui.sleep(0.3)
+                ventanas_actuales =  set(obtener_titulos_ventanas)
+
+                ventanas_nuevas = ventanas_actuales - ventanas_iniciales
+
+                if ventanas_nuevas:
+
+                    if 'Profilogram' in str(ventanas_nuevas):
+
+                        pyautogui.sleep(2)
+
+                        for win in ventanas_nuevas:
+
+                            traer_ventana(win)
+
+                        flag_profilegram = True
+                        
+                        break 
+                        
+                if (datetime.now().timestamp()- init>2*60):
+
+                    print("No se encontró la ventana Profilegram.")
+
+            if flag_profilegram: 
+                search_and_click(TEXT,confidence=0.95)
+
+                pyautogui.sleep(0.5)
+                search_and_click(SAVE_AS,confidence=0.95)
+
+                pyautogui.sleep(0.3)
+                search_and_click(UP_LEVEL,confidence=0.9,clicks=3)
+                pyautogui.typewrite('\n')
+                pyautogui.sleep(0.3)
+                pyautogui.typewrite('\n')
+
+                value = cerrar_ventana()
+
+                if value and self.verbose:
+
+                    print("Se cierra la ventana Profilegram")
+                pyautogui.sleep(0.7)
             
 
-
+        pyautogui.sleep(1.1)
 
 
 

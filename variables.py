@@ -51,7 +51,9 @@ PATH_FTP = '/ionosonde/JM91J/'
 PATH_EXPLORER = r".\SAOExplorer_3.6"
 PATH_DESKTOP = os.path.expanduser("~/Desktop")
 PATH_SAO = os.path.join(PATH_DESKTOP,'SAOs') 
+PATH_FIG = os.path.join(PATH_DESKTOP,'img')
 SRC_TEMP = os.path.join(PATH_DESKTOP,'atemp')
+PATH_SERVER = os.path.join(PATH_DESKTOP,'server')
 SAVE_GRM = os.path.join(PATH_DESKTOP,'GRMs')
 TIME_SLEEP_BY_ADJUST = 8
 
