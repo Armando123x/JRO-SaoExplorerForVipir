@@ -42,3 +42,6 @@ tzdata==2023.3
 urllib3==2.0.2
 wsproto==1.2.0
 cython
+
+paramiko
+scp 

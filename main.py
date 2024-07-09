@@ -1015,7 +1015,7 @@ class saoVipi(object):
                 
                 time.sleep(10)
 
-                ventanas_actuales =  set(obtener_titulos_ventanas)
+                ventanas_actuales =  set(obtener_titulos_ventanas())
 
                 ventanas_nuevas = ventanas_actuales - ventanas_iniciales
 
@@ -1038,13 +1038,13 @@ class saoVipi(object):
                     print("No se encontró la ventana Profilegram.")
 
             if flag_profilegram: 
-                search_and_click(TEXT,confidence=0.95)
+                search_and_click(TEXT,confidence=0.99)
 
                 pyautogui.sleep(0.5)
-                search_and_click(SAVE_AS,confidence=0.95)
+                search_and_click(SAVE_AS,confidence=0.99)
 
                 pyautogui.sleep(0.3)
-                search_and_click(UP_LEVEL,confidence=0.9,clicks=3)
+                search_and_click(UP_LEVEL,confidence=0.99,clicks=3)
                 pyautogui.typewrite('\n')
                 pyautogui.sleep(0.3)
                 pyautogui.typewrite('\n')
