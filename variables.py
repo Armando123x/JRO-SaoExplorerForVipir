@@ -47,7 +47,8 @@ SRC_FTP ='lisn.igp.gob.pe'
 USER_FTP = 'acastro'
 PWD_FTP ='UhmqBB0yLz4f5vLu1HvC'
 # PATH_FTP = '/data1/ionosonde/JM91J/'
-PATH_FTP = '/ionosonde/JM91J/'
+PATH_FTP_LIST = ['/ionosonde/TMJ20/','/ionosonde/JM91J/']
+PATH_FTP = None
 PATH_EXPLORER = r".\SAOExplorer_3.6"
 PATH_DESKTOP = os.path.expanduser("~/Desktop")
 PATH_SAO = os.path.join(PATH_DESKTOP,'SAOs') 
@@ -55,7 +56,7 @@ PATH_FIG = os.path.join(PATH_DESKTOP,'img')
 SRC_TEMP = os.path.join(PATH_DESKTOP,'atemp')
 PATH_SERVER = os.path.join(PATH_DESKTOP,'server')
 SAVE_GRM = os.path.join(PATH_DESKTOP,'GRMs')
-TIME_SLEEP_BY_ADJUST = 8
+TIME_SLEEP_BY_ADJUST = 9
 
 DAYS = [31,28,31,30,31,30,31,31,30,31,30,31]
 
@@ -71,7 +72,7 @@ DAYS = [31,28,31,30,31,30,31,31,30,31,30,31]
 # Por el momento, está deshabilitado la opción daily.
 
 SAVE_SAO = 'daily'
-TH_DB = 28
+TH_DB = 30
 
 MIN_CONFIDENCE = 0.43
 

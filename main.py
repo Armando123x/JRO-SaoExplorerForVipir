@@ -27,6 +27,7 @@ import psutil
 
 pyautogui.FAILSAFE = False
  
+PATH_FTP = None
 
 ### ---------------------------- Iniciamos el programa ------------------------
 
@@ -70,9 +71,13 @@ class saoVipi(object):
 
         self.real_time_climaweb = kwargs.get("realtime_web",False)
         
-        self.__init_config()
-        
-        self.__config_download()
+        for dir_ in PATH_FTP_LIST:
+            print("path",dir_)
+            self.PATH_FTP = dir_
+
+            self.__init_config()
+            
+            self.__config_download()
          
 
     
@@ -83,15 +88,15 @@ class saoVipi(object):
 
         if self.real_time_climaweb:
 
-            self.ini_date = datetime.now().astimezone(timezone.utc) + relativedelta(days=-7)
+            self.ini_date = datetime.now().astimezone(timezone.utc) + relativedelta(days=-1)
 
             self.ini_date = datetime(self.ini_date.year,self.ini_date.month,self.ini_date.day)
-
-            self.fin_date = datetime.now()
+ 
+            self.fin_date =  datetime.now().astimezone(timezone.utc)
             self.fin_date = datetime(self.fin_date.year,self.fin_date.month,self.fin_date.day)
+ 
 
 
-        
         year0   = int(self.ini_date.year)
         month0  = int(self.ini_date.month)
         day0    = int(self.ini_date.day)
@@ -116,8 +121,8 @@ class saoVipi(object):
             while 1:
 
                 tmp_date = self.ini_date + relativedelta(days=+r)
-
-                buff='{}/{:04d}/{:02d}/{:02d}/ngi'.format(PATH_FTP,tmp_date.year,tmp_date.month,tmp_date.day)
+                print(self.PATH_FTP)
+                buff='{}/{:04d}/{:02d}/{:02d}/ngi'.format(self.PATH_FTP,tmp_date.year,tmp_date.month,tmp_date.day)
 
                 paths.append(buff)
 
@@ -400,7 +405,7 @@ class saoVipi(object):
                     
                     if len(files)>0:
                          
-                        files = numpy.array(files)[:7]
+                        files = numpy.array(files) #borrar 
                         
                         for file in files:
                             
@@ -499,7 +504,7 @@ class saoVipi(object):
                     #-------------------------------------------------------#
                     while flag:
 
-                        count = 5
+                       
                         if self.__release_SAOExplorer(count):
                             flag = False
 
@@ -515,6 +520,7 @@ class saoVipi(object):
                                 if len(lista_txt) == 1:
                                     for file in lista_txt:
                                         file = os.path.basename(file)
+                                     
                                         # Construir la ruta de destino
                                         ruta_file = os.path.join(PATH_DESKTOP, file)
                                         ruta_destino = os.path.join(PATH_SAO, file)
@@ -539,6 +545,8 @@ class saoVipi(object):
                                                                    
                                 for file in lista:
                                     file = os.path.basename(file)
+
+                                    file = file.split("(")[0]
                                     # Construir la ruta de destino
                                     ruta_file = os.path.join(PATH_DESKTOP, file)
                                     ruta_destino = os.path.join(PATH_SAO, file)
@@ -718,7 +726,16 @@ class saoVipi(object):
                 lines_append.append(line)
 
 
-        fileout = os.path.join(PATH_SERVER,os.path.basename(path))
+        name = os.path.basename(path)
+        name = name.split("(")[0]
+        name = name.split("_")[1]
+
+        dt = datetime(int(name[:4]),int(name[4:6]),int(name[-2:]))
+        
+        name = f"jic_{str(dt.year)[-2:]}{int(dt.month):02d}{int(dt.day):02d}.pd.txt"
+       
+
+        fileout = os.path.join(PATH_SERVER,name)
         
         if not os.path.isdir(PATH_SERVER):
             os.makedirs(PATH_SERVER)
@@ -764,14 +781,29 @@ class saoVipi(object):
 
             return 
 
-        def cerrar_ventana():
+        def cerrar_ventana(name_window=None):
             FLY = True
             # Obtener el identificador de la ventana activa
-            ventana_activa = win32gui.GetForegroundWindow()
+            pyautogui.sleep(1.5)
+
+            if name_window == None:
+                hwnd = win32gui.GetForegroundWindow()
+            else:
+                hwnd = win32gui.FindWindow(None, name_window)
+
+            # Enviar mensaje de cierre
+            if hwnd:
+                win32gui.SendMessage(hwnd, win32con.WM_CLOSE, 0, 0) 
+
+
+            #ventana_activa = win32gui.GetForegroundWindow()
 
             # Enviar el mensaje de cierre a la ventana
-            win32api.PostMessage(ventana_activa, win32con.WM_CLOSE, 0, 0)
-
+            #win32api.PostMessage(ventana_activa, win32con.WM_CLOSE, 0, 0)
+            pyautogui.sleep(1.5)
+            pyautogui.typewrite('\n')
+            pyautogui.typewrite('\n')
+            
         
             #comprobamos si la ventana está cerrado
             # time_init = time.time()
@@ -857,7 +889,23 @@ class saoVipi(object):
         #presionamos enter para entrar al directorio
         pyautogui.typewrite('\n')
         #Esperamos a que cargue todos los archivos
-        pyautogui.sleep(5)                                 
+        pyautogui.sleep(9)
+
+        #########################################################
+        #maximizamos la ventana
+
+        #pyautogui.hotkey('alt', 'space');time.sleep(0.5);pyautogui.press('x')      
+
+        window = pyautogui.getWindowsWithTitle('SAOExplorer v 3.6.1')[0]
+
+        if window:
+
+            window.maximize()
+        
+
+
+        # Enviar 'x' para maximizar la ventana
+                              
                
         #########################################################
         # Logramos abrir las carpetas 
@@ -874,6 +922,16 @@ class saoVipi(object):
             pyautogui.sleep(0.05)
         
         pyautogui.typewrite('\n')    
+
+
+        ############################################################
+        # Maximizamos la ventana actual
+
+        window = pyautogui.getWindowsWithTitle('Ionogram')[0]
+
+        if window:
+
+            window.maximize()
         ############################################################
         # Ahora procedemos a ajustar los archivos 
         # :-> Presionar x  -> Siguiente
@@ -1000,13 +1058,15 @@ class saoVipi(object):
             Se piensa plotear los valores de Ne o frequency 
             '''
 
-            search_and_click(VIEW_MENU,confidence=.95)
+            search_and_click(VIEW_MENU,confidence=.99)
             pyautogui.sleep(0.5)
-            search_and_click(PROFILOGRAM,confidence=0.95)
-            pyautogui.sleep(1)#Esperamos 60 segundos para la generación de las graficas
-
-
             ventanas_iniciales = set(obtener_titulos_ventanas())
+            print("Ventanas iniciales",ventanas_iniciales)
+            search_and_click(PROFILOGRAM,confidence=0.9)
+            pyautogui.sleep(30)#Esperamos 60 segundos para la generación de las graficas
+
+
+            
 
             init = datetime.now().timestamp()
 
@@ -1021,13 +1081,15 @@ class saoVipi(object):
 
                 if ventanas_nuevas:
 
-                    if 'Profilogram' in str(ventanas_nuevas):
+                    if 'profilogram' in str(ventanas_nuevas).lower():
 
                         pyautogui.sleep(2)
 
                         for win in ventanas_nuevas:
+                        
 
                             traer_ventana(win)
+                            print("cambiando ventana!!")
 
                         flag_profilegram = True
                         
@@ -1035,7 +1097,8 @@ class saoVipi(object):
                         
                 if (datetime.now().timestamp()- init>2*60):
 
-                    print("No se encontró la ventana Profilegram.")
+                    print("No se encontró la ventana Profilegram.",ventanas_nuevas)
+                    raise RuntimeError("Error al generar Profilegram")
 
             if flag_profilegram: 
                 search_and_click(TEXT,confidence=0.99)
@@ -1057,7 +1120,7 @@ class saoVipi(object):
                 pyautogui.sleep(0.7)
             
 
-        pyautogui.sleep(1.1)
+        pyautogui.sleep(2)
 
 
 
@@ -1068,13 +1131,17 @@ class saoVipi(object):
         # Llamar a la función para cerrar la ventana
         pyautogui.typewrite('\n')
         pyautogui.typewrite('\n')
-        value = cerrar_ventana()
+        #value = cerrar_ventana()
         pyautogui.typewrite('\n')
         pyautogui.typewrite('\n')
 
+        pyautogui.sleep(2)
+        cerrar_ventana('SAOExplorer v 3.6.1')
+        # pyautogui.hotkey('alt', 'f4')
+        # pyautogui.hotkey('alt', 'f4')
 
 
-
+        value = True
 
 
 
@@ -1088,15 +1155,16 @@ class saoVipi(object):
      
             pool.terminate()
             return False
-
+        
         pool.close()
         pool.join()
         pool.terminate()
        
+       
         ##############################################################
         #Terminar todos los procesos 
         gc.collect()
-        pyautogui.sleep(5)
+        pyautogui.sleep(1)
         return True 
         
         
@@ -1153,9 +1221,9 @@ class saoVipi(object):
                                                       'path_download',
                                                       'path_sao'])
             else:
-                if os.path.isfile(file): 
-                    self.database = pd.read_pickle(file)
-                else:
+                # if os.path.isfile(file): 
+                #     self.database = pd.read_pickle(file)
+                # else:
                     self.database = pd.DataFrame(columns=['name_ngi',
                                                       'name_grm', 
                                                       'name_sao', 
